@@ -1,24 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ReportComponent } from './report.component';
-import { TableComponent } from './table/table.component';
-import { ChartComponent } from './chart/chart.component';
+import { TablesComponent } from './tables/tables.component';
 
 const routes: Routes = [
   {
     path: 'report',
-    component: ReportComponent,
-    children: [
-      {
-        path: 'table',
-        component: TableComponent,
-      },
-      {
-        path: 'chart',
-        component: ChartComponent,
-      }
-
-    ]
+    component: ReportComponent
   }
 ];
 

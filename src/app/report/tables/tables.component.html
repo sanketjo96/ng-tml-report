@@ -1,0 +1,11 @@
+<div class="report-tables-wrapper" *ngIf="data && data.length">
+    <ng-container *ngFor="let item of data; let i=index">
+        <app-tml-table
+            [tableLable]="colsConfig.groups[i].label"
+            class="dt-table" 
+            [pageSize]="5"
+            [displayedColumns]="displayedColumns[i]"
+            [data]="item">
+        </app-tml-table>
+    </ng-container>
+</div>

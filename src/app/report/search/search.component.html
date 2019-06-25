@@ -1,0 +1,20 @@
+<mat-card>
+    <mat-card-content>
+        <mat-form-field class="report-search-typeahead">
+            <input 
+              matInput
+              type="text"   
+              placeholder="search for complaint group"
+              [formControl]="complaintGroupSearchControl" 
+              [matAutocomplete]="auto"
+            >
+        </mat-form-field>
+          
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let cGorups of complaintGroups" [value]="cGorups.Complaint_Group">{{cGorups.Complaint_Group_Description}}</mat-option>
+        </mat-autocomplete>
+
+        <button mat-raised-button color="accent" (click)="search()">Search</button>
+
+    </mat-card-content>
+</mat-card>

@@ -1,0 +1,15 @@
+<div class="tml-report">
+  <div class="tml-search">
+      <app-search (searchParams)="onSearch($event)"></app-search>
+  </div>
+
+  <div class="tml-report-viewer">
+      <div class="tml-table" *ngIf="view === 'table'">
+        <app-tables [colsConfig]="colsConfig"></app-tables>
+      </div>
+      <div class="tml-chart"></div>
+  </div>
+</div>
+
+
+
