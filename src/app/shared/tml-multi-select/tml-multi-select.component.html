@@ -1,0 +1,23 @@
+<mat-form-field>
+  <mat-label>{{label}}</mat-label>
+  <mat-select [formControl]="selectControl" multiple>
+  
+    <mat-option disabled="disabled" class="filter-option">
+        <button 
+          mat-raised-button 
+          class="mat-primary fill text-sm" 
+          (click)="selectAll()">
+          Select All
+        </button>
+        
+        <button 
+          mat-raised-button 
+          class="mat-accent fill text-sm" 
+          (click)="deselectAll()">
+          Deselect All
+        </button>
+      </mat-option>
+ 
+      <mat-option *ngFor="let data of dataList" [value]="data">{{data}}</mat-option>
+  </mat-select>
+</mat-form-field>

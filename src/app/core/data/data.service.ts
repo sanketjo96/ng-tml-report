@@ -12,17 +12,18 @@ export class DataService {
 
   constructor(private http: HttpClient) { }
 
-  getAllComplaints(limit: number = 30, skip: number = 0) {
-    return this.http.get(`${this.base_url}/getallcomplaints`,{ 
-      params: new HttpParams()
-        .set('limit', limit.toString())
-        .set('skip', skip.toString())
-    })
+  getModels(): Observable<Array<string>> {
+    return this.http.get(`${this.base_url}/getModels/`).pipe(
+      map((data: any) => <Array<string>> data.data )
+    );
   }
 
   findComplaints(finder: IComplaintFinder): Observable<Array<IComplaint>> {
     const complaintGroupCode = finder.complaintGroupCode;
-    return this.http.get(`${this.base_url}/getcomplaints/${complaintGroupCode}`).pipe(
+    return this.http.get(`${this.base_url}/getcomplaints/${complaintGroupCode}`, { 
+      params: new HttpParams()
+        .set('models', finder.models.join(','))
+    }).pipe(
       map((data: any) => <Array<IComplaint>> data.data )
     );
   }

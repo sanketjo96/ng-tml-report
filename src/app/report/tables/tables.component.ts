@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { ReportService } from '../report.service';
-import { ActivatedRoute } from '@angular/router';
-import { IReportRequirements } from '../report.data';
+import { IReportConfig } from '../report.data';
 
 @Component({
   selector: 'app-tables',
@@ -12,7 +11,7 @@ export class TablesComponent implements OnInit, OnChanges {
   data: Array<Array<any>> = [[]];
   displayedColumns: Array<Array<any>> = [];
 
-  @Input() colsConfig: IReportRequirements;
+  @Input() colsConfig: IReportConfig;
 
   constructor(private reportService: ReportService) { }
 

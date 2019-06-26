@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IComplaint } from '../models/complaint';
-import { IReportRequirements } from './report.data';
+import { IReportConfig } from './report.data';
 
 @Injectable({
     providedIn: 'root'
@@ -10,7 +10,7 @@ export class ReportService {
     dataCategories: Array<string> = [];
     constructor() { }
 
-    getGroupedData(data: Array<IComplaint>, reportConfig: IReportRequirements) {
+    getGroupedData(data: Array<IComplaint>, reportConfig: IReportConfig) {
         this.groupedData = data.reduce((acc, item: IComplaint) => {
             for (let i = 0; i < reportConfig.groups.length; i++) {
                 const group = reportConfig.groups[i].groupBy;
@@ -32,7 +32,7 @@ export class ReportService {
         this.dataCategories = Object.keys(this.groupedData);
     }
 
-    getTableSetCols(data: IReportRequirements) {
+    getTableSetCols(data: IReportConfig) {
         const tablescol = [];
         for (let k=0; k< data.groups.length; k++) {
             const col = [];

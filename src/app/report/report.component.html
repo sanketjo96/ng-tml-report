@@ -4,6 +4,7 @@
   </div>
 
   <div class="tml-report-viewer">
+      <h4>{{reportLabel}}</h4>
       <div class="tml-table" *ngIf="view === 'table'">
         <app-tables [colsConfig]="colsConfig"></app-tables>
       </div>

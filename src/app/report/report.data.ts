@@ -7,20 +7,13 @@ interface IReportGroup {
     uniqueListFields?: Array<string>
 }
 
-export interface IReportRequirements {
+export interface IReportConfig {
     groups: Array<IReportGroup>
 }
 
 
 export interface ReportSearch {
-    colConfig: IReportRequirements,
+    colConfig: IReportConfig,
     complaintPrams: IComplaintFinder
     view: string
-}
-
-export enum ReportMap {
-    Dealer_City="Dealer City",
-    Dealer_Code_Description="Dealer Name",
-    Model="Model",
-    Sale_Month="Sale Month"
 }

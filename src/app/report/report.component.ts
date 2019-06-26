@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { IReportRequirements, ReportSearch } from './report.data';
+import { IReportConfig, ReportSearch } from './report.data';
 import { DataService } from '../core/data/data.service';
-import { IComplaintFinder, IComplaint } from '../models/complaint';
+import { IComplaint } from '../models/complaint';
 import { ReportService } from './report.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-report',
@@ -12,7 +11,8 @@ import { Router } from '@angular/router';
 })
 export class ReportComponent implements OnInit {
   view: string = '';
-  colsConfig: IReportRequirements = null;
+  reportLabel: string;
+  colsConfig: IReportConfig = null;
   constructor(
     private dataService: DataService, 
     private reportService: ReportService,
@@ -24,6 +24,7 @@ export class ReportComponent implements OnInit {
 
   onSearch(params: ReportSearch) {
     this.dataService.findComplaints(params.complaintPrams).subscribe((data: Array<IComplaint>) => {
+      this.reportLabel = `${params.complaintPrams.complaintGroupCode} - ${params.complaintPrams.complaintGroupDesc}`;
       this.reportService.getGroupedData(data, params.colConfig);
       this.colsConfig = JSON.parse(JSON.stringify(params.colConfig));
       this.view = params.view;

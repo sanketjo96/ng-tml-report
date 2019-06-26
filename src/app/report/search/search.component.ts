@@ -2,7 +2,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { filter, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { DataService } from 'src/app/core/data/data.service';
-import { IReportRequirements, ReportSearch } from '../report.data';
+import { IReportConfig, ReportSearch } from '../report.data';
 
 @Component({
   selector: 'app-search',
@@ -11,13 +11,20 @@ import { IReportRequirements, ReportSearch } from '../report.data';
 })
 export class SearchComponent implements OnInit {
   complaintGroupSearchControl = new FormControl('');
-  complaintGroups: any;
-  reportConfig: IReportRequirements;
+  complaintGroups: any = [];
+
+  modelsControl = new FormControl('');
+  modelsGroup: Array<string> = [];
+  selectedModels: Array<string> = []
+
+  reportConfig: IReportConfig;
+  optionSelected = false;
   @Output() searchParams = new EventEmitter<ReportSearch>();
 
   constructor(private dataService: DataService) { }
 
   ngOnInit() {
+    this.dataService.getModels().subscribe(data => this.modelsGroup = data);
     this.reportConfig = {
       groups: [
         {
@@ -43,29 +50,40 @@ export class SearchComponent implements OnInit {
       ]
     }
 
-    const typeahead = this.complaintGroupSearchControl.valueChanges.pipe(
-      filter(text => text.length >= 4),
+   this.complaintGroupSearchControl.valueChanges.pipe(
+      filter(text => text.length >= 4 && !this.getPredictionObject(text, 'Complaint_Group')),
       debounceTime(10),
       distinctUntilChanged(),
       switchMap((text) => this.dataService.searchComplaintGroup(text))
-    );
-
-    typeahead.subscribe((data: any)=> {
+    ).subscribe((data: any)=> {
       this.complaintGroups = data.data;
-    })
+    });
+
+    this.modelsControl.valueChanges.subscribe(data => this.selectedModels = data);
+  }
+
+  getPredictionObject(text: string, keyToSearch: string) {
+    return this.complaintGroups.find((data) => {
+      return data[keyToSearch] === text;
+    });
   }
 
   search() {
-    if (this.complaintGroupSearchControl.value) {
+    const selectedComplaintGroupCode = this.complaintGroupSearchControl.value;
+    if (selectedComplaintGroupCode) {
+     const complaint = this.getPredictionObject(selectedComplaintGroupCode, 'Complaint_Group');
+     if (complaint) { 
       const params: ReportSearch = {
-        colConfig: this.reportConfig,
-        complaintPrams: {
-          complaintGroupCode: this.complaintGroupSearchControl.value
-        },
-        view: 'table'
+          colConfig: this.reportConfig,
+          complaintPrams: {
+            complaintGroupCode: selectedComplaintGroupCode,
+            complaintGroupDesc: complaint.Complaint_Group_Description,
+            models: this.selectedModels
+          },
+          view: 'table'
+        }
+        this.searchParams.emit(params)
       }
-      this.searchParams.emit(params)
     }
   }
-
 }

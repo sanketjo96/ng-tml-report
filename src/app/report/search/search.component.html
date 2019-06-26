@@ -10,10 +10,13 @@
             >
         </mat-form-field>
           
-        <mat-autocomplete #auto="matAutocomplete">
+        <mat-autocomplete #auto="matAutocomplete" >
           <mat-option *ngFor="let cGorups of complaintGroups" [value]="cGorups.Complaint_Group">{{cGorups.Complaint_Group_Description}}</mat-option>
         </mat-autocomplete>
 
+        <tml-multi-select [label]="'Models'" [selectControl]="modelsControl" [dataList]="modelsGroup"></tml-multi-select>
+
+        <br/>
         <button mat-raised-button color="accent" (click)="search()">Search</button>
 
     </mat-card-content>
