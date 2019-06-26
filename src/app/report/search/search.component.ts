@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { filter, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { DataService } from 'src/app/core/data/data.service';
 import { IReportConfig, ReportSearch } from '../report.data';
+import { reportConfig } from './search.config';
 
 @Component({
   selector: 'app-search',
@@ -17,6 +18,16 @@ export class SearchComponent implements OnInit {
   modelsGroup: Array<string> = [];
   selectedModels: Array<string> = []
 
+  misControl = new FormControl('');
+  misGroup: Array<number> = [3, 6, 9, 12, 15, 18, 21, 24];
+  selectedMis: number
+
+  fromComplaintDateControl = new FormControl();
+  selectedFromDate: Date;
+  
+  toComplaintDateControl = new FormControl();
+  selectedToDate: Date;
+
   reportConfig: IReportConfig;
   optionSelected = false;
   @Output() searchParams = new EventEmitter<ReportSearch>();
@@ -25,30 +36,7 @@ export class SearchComponent implements OnInit {
 
   ngOnInit() {
     this.dataService.getModels().subscribe(data => this.modelsGroup = data);
-    this.reportConfig = {
-      groups: [
-        {
-          label: "Complaint Aggregate by Modal",
-          groupBy: 'Model',
-          aggregateFields: ['No_of_Complaints', 'Total_Expenses']
-        },
-        {
-          label: "Complaint Aggregate by Production Month",
-          groupBy: 'Production_Month',
-          aggregateFields: ['No_of_Complaints', 'Total_Expenses']
-        },
-        {
-          label: "Complaint Aggregate by Dealer",
-          groupBy: 'Dealer_Code_Description',
-          aggregateFields: ['No_of_Complaints', 'Total_Expenses'],
-        },
-        {
-          label: "Complaint Aggregate by Deler's city",
-          groupBy: 'Dealer_City',
-          aggregateFields: ['No_of_Complaints', 'Total_Expenses']
-        }
-      ]
-    }
+    this.reportConfig = reportConfig;
 
    this.complaintGroupSearchControl.valueChanges.pipe(
       filter(text => text.length >= 4 && !this.getPredictionObject(text, 'Complaint_Group')),
@@ -60,6 +48,10 @@ export class SearchComponent implements OnInit {
     });
 
     this.modelsControl.valueChanges.subscribe(data => this.selectedModels = data);
+    this.misControl.valueChanges.subscribe(data => this.selectedMis = data);
+
+    this.fromComplaintDateControl.valueChanges.subscribe(data => this.selectedFromDate = data);
+    this.toComplaintDateControl.valueChanges.subscribe(data => this.selectedToDate = data);
   }
 
   getPredictionObject(text: string, keyToSearch: string) {
@@ -78,7 +70,10 @@ export class SearchComponent implements OnInit {
           complaintPrams: {
             complaintGroupCode: selectedComplaintGroupCode,
             complaintGroupDesc: complaint.Complaint_Group_Description,
-            models: this.selectedModels
+            models: this.selectedModels,
+            mis: this.selectedMis,
+            from: this.selectedFromDate,
+            to: this.selectedToDate
           },
           view: 'table'
         }

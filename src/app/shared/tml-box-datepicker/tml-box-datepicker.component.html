@@ -1,0 +1,13 @@
+<mat-form-field>
+  <mat-label>{{fromlabel}}</mat-label>
+  <input matInput [matDatepicker]="fromDate" [formControl]="fromDateControl">
+  <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
+  <mat-datepicker #fromDate></mat-datepicker>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>{{tolabel}}</mat-label>
+  <input matInput [matDatepicker]="toDate" [formControl]="toDateControl">
+  <mat-datepicker-toggle matSuffix [for]="toDate"></mat-datepicker-toggle>
+  <mat-datepicker #toDate></mat-datepicker>
+</mat-form-field>

@@ -1,9 +1,14 @@
 import { IComplaintFinder } from '../models/complaint';
 
+export enum GroupByTransform {
+    toTMLDate="toTMLDate",
+}
+
 interface IReportGroup {
     label: string;
     groupBy: string;
-    aggregateFields: Array<string>;
+    groupByTransform?: GroupByTransform;
+    aggregateFields?: Array<string>;
     uniqueListFields?: Array<string>
 }
 

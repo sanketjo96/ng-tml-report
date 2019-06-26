@@ -14,7 +14,28 @@
           <mat-option *ngFor="let cGorups of complaintGroups" [value]="cGorups.Complaint_Group">{{cGorups.Complaint_Group_Description}}</mat-option>
         </mat-autocomplete>
 
-        <tml-multi-select [label]="'Models'" [selectControl]="modelsControl" [dataList]="modelsGroup"></tml-multi-select>
+        <tml-select 
+          [isMultiSelect]="true" 
+          [label]="'Models'" 
+          [selectControl]="modelsControl" 
+          [dataList]="modelsGroup">
+        </tml-select>
+        
+        <tml-select 
+          [isMultiSelect]="false" 
+          [label]="'Up to MIS'" 
+          [selectControl]="misControl" 
+          [dataList]="misGroup">
+        </tml-select>
+
+        <br>
+        <tml-box-datepicker 
+          [fromlabel]="'From Complaint Date'"
+          [tolabel]="'To Complaint Date'"
+          [fromDateControl]="fromComplaintDateControl"
+          [toDateControl]="toComplaintDateControl"
+          >
+        </tml-box-datepicker>
 
         <br/>
         <button mat-raised-button color="accent" (click)="search()">Search</button>

@@ -1,8 +1,8 @@
-<mat-form-field>
+<mat-form-field class="tml-select">
   <mat-label>{{label}}</mat-label>
-  <mat-select [formControl]="selectControl" multiple>
+  <mat-select [formControl]="selectControl" [multiple]="isMultiSelect">
   
-    <mat-option disabled="disabled" class="filter-option">
+    <mat-option *ngIf="isMultiSelect" disabled="disabled" class="filter-option">
         <button 
           mat-raised-button 
           class="mat-primary fill text-sm" 

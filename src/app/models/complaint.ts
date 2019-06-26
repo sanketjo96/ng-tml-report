@@ -2,8 +2,8 @@ export interface IComplaintFinder {
     complaintGroupCode: string,
     complaintGroupDesc?: string,
     models?: Array<string>,
-    from?: string,
-    to?: string,
+    from?: Date,
+    to?: Date,
     mis?: number
 }
 
