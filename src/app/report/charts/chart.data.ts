@@ -6,6 +6,8 @@ export enum ChartType {
 export interface Dset {
     data?: Array<number>;
     label?: string;
+    yAxisID?: string;
+    type?: ChartType
 } 
 
 export interface TMLChartData {

@@ -102,7 +102,12 @@ export class ReportService {
                 }, [[], []]);
   
                 dataset.data = sets[1];
+                dataset.yAxisID = 'left';
                 chart.datasets.push(dataset);
+
+                // Add parato data set
+                chart.datasets.push(this.getParatoDataSet(dataset.data));
+
                 chart.labels = sets[0];
             }
             charts.push(chart);
@@ -119,5 +124,29 @@ export class ReportService {
        return unsorted.sort(function(a, b) {
             return b[1] - a[1];
         });
+    }
+
+    getParatoDataSet(baseData: Array<number>): Dset {
+        let paratoDataset: Dset = {};
+        paratoDataset.type = ChartType.line;
+        paratoDataset.yAxisID = 'right';
+        paratoDataset.label = 'Parato indicator';
+        const sum = baseData.reduce((acc, number) => {
+            acc += number;
+            return acc;
+        }, 0);
+        paratoDataset.data = this.getCumulativePercentage(baseData, sum);
+        return paratoDataset;
+    }
+
+    getCumulativePercentage(list: Array<number>, sum: number): Array<number> {
+        const cumPer = [];
+        list.reduce((acc, number) => {
+            acc += number;
+            cumPer.push((acc / sum) * 100);
+            return acc;
+        }, 0);
+
+        return cumPer;
     }
 }
