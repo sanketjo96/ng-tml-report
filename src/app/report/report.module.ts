@@ -13,12 +13,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { ChartsComponent } from './charts/charts.component';
 
 @NgModule({
   declarations: [
     ReportComponent,
     SearchComponent,
     TablesComponent,
+    ChartsComponent,
   ],
   imports: [
     CommonModule,

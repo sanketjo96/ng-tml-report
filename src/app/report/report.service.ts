@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { IComplaint } from '../models/complaint';
 import { IReportConfig, GroupByTransform } from './report.data';
 import { UtilService } from '../core/util/util.service';
+import { Dset, TMLChartData, ChartType } from './charts/chart.data';
 
 @Injectable({
     providedIn: 'root'
@@ -76,5 +77,47 @@ export class ReportService {
             tables.push(tablerows)
         }
         return tables;
+    }
+
+    getChartsDataSet(data: IReportConfig): Array<TMLChartData> {
+        let charts: Array<TMLChartData> = [];
+        for (let k=0; k< data.groups.length; k++) {
+            let chart: TMLChartData = {};
+            const group = data.groups[k];
+            chart.chartType = ChartType.bar;
+            chart.title = group.label;
+            chart.legend = true;
+            chart.datasets = [];
+
+            const chartData = this.groupedData[group.groupBy];
+            const valueField = group.aggregateFields;
+            for(let j=0; j < 1; j++) {
+                let dataset: Dset = {};
+                dataset.label = valueField[j];
+                const sorted = this.getSortedChartData(chartData, dataset.label);
+                const sets = sorted.reduce((acc, chunk) => {
+                    acc[0].push(chunk[0]);
+                    acc[1].push(chunk[1]);
+                    return acc;
+                }, [[], []]);
+  
+                dataset.data = sets[1];
+                chart.datasets.push(dataset);
+                chart.labels = sets[0];
+            }
+            charts.push(chart);
+        }
+        return charts;
+    }
+
+    getSortedChartData(chartData: any, sortOn: string) {
+        const unsorted = [];
+        for (var key in chartData) {
+            unsorted.push([key, chartData[key][sortOn]]);
+        }
+
+       return unsorted.sort(function(a, b) {
+            return b[1] - a[1];
+        });
     }
 }

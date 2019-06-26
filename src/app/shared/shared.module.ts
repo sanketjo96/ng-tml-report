@@ -5,13 +5,20 @@ import { MatPaginatorModule, MatSortModule, MatTooltipModule, MatTableModule, Ma
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material';
 import {MatSelectModule} from '@angular/material/select';
+import { ChartsModule } from 'ng2-charts';
 
 import { TmlTableComponent } from './tml-table/tml-table.component';
 import { TmlMultiSelectComponent } from './tml-multi-select/tml-multi-select.component';
 import { TmlBoxDatepickerComponent } from './tml-box-datepicker/tml-box-datepicker.component';
+import { TmlBarChartComponent } from './tml-chart/tml-bar-chart.component';
 
 @NgModule({
-  declarations: [TmlTableComponent, TmlMultiSelectComponent, TmlBoxDatepickerComponent],
+  declarations: [
+    TmlTableComponent, 
+    TmlMultiSelectComponent, 
+    TmlBoxDatepickerComponent, 
+    TmlBarChartComponent
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -24,9 +31,15 @@ import { TmlBoxDatepickerComponent } from './tml-box-datepicker/tml-box-datepick
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
-    MatTooltipModule
+    MatTooltipModule,
+    ChartsModule
   ],
   providers: [MatNativeDateModule],
-  exports: [TmlTableComponent, TmlMultiSelectComponent, TmlBoxDatepickerComponent]
+  exports: [
+    TmlTableComponent,
+    TmlMultiSelectComponent,
+    TmlBoxDatepickerComponent,
+    TmlBarChartComponent
+  ]
 })
 export class SharedModule { }

@@ -8,7 +8,9 @@
       <div class="tml-table" *ngIf="view === 'Table View'">
         <app-tables [colsConfig]="colsConfig"></app-tables>
       </div>
-      <div class="tml-chart"></div>
+      <div class="tml-chart" *ngIf="view === 'Chart View'">
+        <report-charts [colsConfig]="colsConfig"></report-charts>
+      </div>
   </div>
 </div>
 

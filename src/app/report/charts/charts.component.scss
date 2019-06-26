@@ -1,0 +1,11 @@
+.report-chart-wrapper {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-gap: 10px;
+    .tml-chart {
+        border-radius: 5px;
+        padding: 20px;
+        font-size: 150%;
+      }
+}
+  

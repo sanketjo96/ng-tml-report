@@ -1,0 +1,12 @@
+<div>
+    <div class="chart-label">{{ chartData.title }}</div>
+    <canvas
+        baseChart
+        [chartType]="chartData.chartType"
+        [datasets]="chartData.datasets"
+        [labels]="chartData.labels"
+        [options]="chartOptions"
+        [legend]="chartData.legend"
+        (chartClick)="onChartClick($event)">
+    </canvas>
+</div>
