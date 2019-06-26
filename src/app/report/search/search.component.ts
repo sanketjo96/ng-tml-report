@@ -11,6 +11,9 @@ import { reportConfig } from './search.config';
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
+  viewToggle = true;
+  view = 'Table View';
+ 
   complaintGroupSearchControl = new FormControl('');
   complaintGroups: any = [];
 
@@ -59,6 +62,12 @@ export class SearchComponent implements OnInit {
       return data[keyToSearch] === text;
     });
   }
+  
+  onViewChange() {
+    this.viewToggle = !this.viewToggle;
+    this.view = this.viewToggle ? 'Table View' : 'Chart View';
+    this.search();
+  }
 
   search() {
     const selectedComplaintGroupCode = this.complaintGroupSearchControl.value;
@@ -75,7 +84,7 @@ export class SearchComponent implements OnInit {
             from: this.selectedFromDate,
             to: this.selectedToDate
           },
-          view: 'table'
+          view: this.view
         }
         this.searchParams.emit(params)
       }

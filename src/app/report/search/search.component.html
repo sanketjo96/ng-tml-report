@@ -1,5 +1,10 @@
 <mat-card>
     <mat-card-content>
+        <mat-slide-toggle (toggleChange)="onViewChange($event)">
+          <mat-label>{{view}}</mat-label>
+        </mat-slide-toggle>
+
+        <br>
         <mat-form-field class="report-search-typeahead">
             <input 
               matInput
@@ -14,14 +19,14 @@
           <mat-option *ngFor="let cGorups of complaintGroups" [value]="cGorups.Complaint_Group">{{cGorups.Complaint_Group_Description}}</mat-option>
         </mat-autocomplete>
 
-        <tml-select 
+        <tml-select
           [isMultiSelect]="true" 
           [label]="'Models'" 
           [selectControl]="modelsControl" 
           [dataList]="modelsGroup">
         </tml-select>
         
-        <tml-select 
+        <tml-select
           [isMultiSelect]="false" 
           [label]="'Up to MIS'" 
           [selectControl]="misControl" 
