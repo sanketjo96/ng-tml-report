@@ -19,6 +19,7 @@ export class ChartsComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     this.data = this.reportService.getChartsDataSet(this.viewConfig);
+    console.log(this.data);
   }
 
 }

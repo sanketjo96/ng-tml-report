@@ -3,7 +3,7 @@
     <b>{{ tableLable }}</b>
   </div>
   
-  <table mat-table class="full-width-table" matSort [matSortActive]="defaultColToSort.name" [matSortDirection]="defaultColToSort.direction" aria-label="Elements">
+  <table mat-table class="full-width-table" matSort [matSortActive]="defaultColToSort?.name" [matSortDirection]="defaultColToSort?.direction" aria-label="Elements">
     <ng-container *ngFor="let col of displayedColumns">
       <ng-container matColumnDef="{{ col }}">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ col }}</th>
@@ -12,7 +12,7 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRowClick(row)"></tr>
+    <tr mat-row class="clickable" *matRowDef="let row; columns: displayedColumns;" (click)="onRowClick(row)"></tr>
   </table>
 
   <mat-paginator #paginator [length]="dataSource?.data.length" [pageIndex]="0" [pageSize]="pageSize"

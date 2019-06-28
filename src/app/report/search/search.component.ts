@@ -42,7 +42,7 @@ export class SearchComponent implements OnInit {
     this.sControl.models.instance.valueChanges.subscribe(data => this.sControl.models.selectedVal = data);
     this.sControl.mis.instance.valueChanges.subscribe(data => this.sControl.mis.selectedVal = data);
     this.sControl.from.instance.valueChanges.subscribe(data =>  this.sControl.from.selectedVal = data);
-    this.sControl.to.instance.valueChanges.subscribe(data => this.sControl.from.selectedVal = data);
+    this.sControl.to.instance.valueChanges.subscribe(data => this.sControl.to.selectedVal = data);
   }
 
   getPredictionObject(text: string, keyToSearch: string) {
@@ -61,7 +61,7 @@ export class SearchComponent implements OnInit {
     this.sControl.complaint.selectedVal = this.sControl.complaint.instance.value;
     if (this.sControl.complaint.selectedVal) {
      const complaint = this.getPredictionObject(this.sControl.complaint.selectedVal, 'Complaint_Group');
-     if (complaint) { 
+     if (complaint) {
       const params: ReportSearch = {
           viewConfig: this.viewConfig,
           complaintGroupDesc: complaint.Complaint_Group_Description,

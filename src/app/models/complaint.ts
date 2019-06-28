@@ -8,6 +8,26 @@ export interface ComplaintFinder {
     mis?: number
 }
 
+
+export const KmBuckets = [
+    {
+        min: 10000,
+        max: 25000
+    },
+    {
+        min: 25000,
+        max: 50000
+    },
+    {
+        min: 50000,
+        max: 100000
+    },
+    {
+        min: 100000,
+        max: 1000000
+    }
+];
+
 export class Complaint {
     _id: string;
     Dealer_Code: string;
@@ -21,7 +41,8 @@ export class Complaint {
     Chassis_No: string;
     Chassis_Type: string;
     Production_Month: string;
-    Kilometers_Covered: string;
+    Kilometers_Covered: number;
+    km_buckets: string;
     Complaint_Group: string;
     Complaint_Group_Description: string;
     Complaint_Code: string;
@@ -48,7 +69,21 @@ export class Complaint {
         this.Chassis_No = data.Chassis_No;
         this.Chassis_Type = data.Chassis_Type;
         this.Production_Month = data.Production_Month;
-        this.Kilometers_Covered = data.Kilometers_Covered;
+        this.Kilometers_Covered = parseInt(data.Kilometers_Covered, 10) ? parseInt(data.Kilometers_Covered, 10) : 0;
+        
+
+        const kmbucket = KmBuckets.find(item => {
+            return (
+                item.min < this.Kilometers_Covered
+                && item.max >= this.Kilometers_Covered
+            );
+        });
+
+        this.km_buckets = kmbucket 
+            ? `${kmbucket.min.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} - ${kmbucket.max.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}` 
+            : 'Above 1000000'
+        ;
+        
         this.Complaint_Group = data.Complaint_Group;
         this.Complaint_Group_Description = data.Complaint_Group_Description;
         this.Complaint_Code = data.Complaint_Code;

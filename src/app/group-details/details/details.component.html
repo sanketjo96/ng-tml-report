@@ -1,32 +1,10 @@
-<div class="grid-wrapper" *ngIf="detailsGridData && detailsGridData.length">
-    <p-table #dt [columns]="cols" [value]="detailsGridData" [(selection)]="selectedComplaints">
-        
-        <ng-template pTemplate="caption">
-            <div class="ui-helper-clearfix">
-                <button type="button" pButton icon="fa fa-file-o" iconPos="left" label="All Data" (click)="dt.exportCSV()" style="float:left">All Data</button>
-            </div>
-            <div style="text-align: right">
-                <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
-                <input 
-                    type="text" 
-                    pInputText 
-                    size="50" 
-                    placeholder="Global Filter"
-                    (input)="dt.filterGlobal($event.target.value, 'contains')"
-                    style="width:auto">
-            </div>
-        </ng-template>
-
-        <ng-template pTemplate="header" let-columns>
-            <tr>
-                <th *ngFor="let col of columns">{{col}}</th>
-            </tr>
-        </ng-template>
-
-        <ng-template pTemplate="body" let-complaint let-columns="columns">
-            <tr [pSelectableRow]="complaint">
-                <td *ngFor="let col of columns">{{complaint[col]}}</td>
-            </tr>
-        </ng-template>
-    </p-table>
+<div class="details-tables-wrapper" *ngIf="detailsGridData && detailsGridData.length">
+    <tml-table
+        [tableLable]="detailsLabel"
+        [defaultColToSort]="defaultColToSort"
+        class="dt-table" 
+        [pageSize]="50"
+        [displayedColumns]="cols"
+        [data]="detailsGridData">
+    </tml-table>
 </div>

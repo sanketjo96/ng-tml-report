@@ -44,6 +44,28 @@ export const reportConfig: ITMLViewConfig = {
             }
         },
         {
+            label: "Aggregate by Kms Covered",
+            dimension: 'km_buckets',
+            measures: ['No_of_Complaints', 'Total_Expenses'],
+            table: {
+                defaultSortmeasure: {
+                    name: 'No_of_Complaints',
+                    direction: SortDirection.desc
+                }
+            }
+        },
+        {
+            label: "Aggregate by Chassis_No",
+            dimension: 'Chassis_No',
+            measures: ['No_of_Complaints', 'Total_Expenses'],
+            table: {
+                defaultSortmeasure: {
+                    name: 'No_of_Complaints',
+                    direction: SortDirection.desc
+                }
+            }
+        },
+        {
             label: "Aggregate by Dealer",
             dimension: 'Dealer_Name',
             measures: ['No_of_Complaints', 'Total_Expenses'],
@@ -79,6 +101,17 @@ export const reportConfig: ITMLViewConfig = {
         {
             label: "Aggregate by Production Month",
             dimension: 'Production_Month',
+            measures: ['No_of_Complaints', 'Total_Expenses'],
+            table: {
+                defaultSortmeasure: {
+                    name: 'No_of_Complaints',
+                    direction: SortDirection.desc
+                }
+            }
+        },
+        {
+            label: "Aggregate by Sale Month",
+            dimension: 'Sale_Month',
             measures: ['No_of_Complaints', 'Total_Expenses'],
             table: {
                 defaultSortmeasure: {

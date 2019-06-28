@@ -7,7 +7,8 @@ export interface Dset {
     data?: Array<number>;
     label?: string;
     yAxisID?: string;
-    type?: ChartType
+    type?: ChartType;
+    fill?: boolean;
 } 
 
 export interface TMLChartData {

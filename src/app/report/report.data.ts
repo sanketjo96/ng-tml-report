@@ -7,7 +7,7 @@ export enum SortDirection {
 
 export interface ISortCol {
     name: string;
-    direction: SortDirection
+    direction?: SortDirection
 }
 
 export interface ITable {
@@ -15,12 +15,13 @@ export interface ITable {
 }
 
 export interface IChart {
-
+    mesureToPlot?: Array<string>;
+    noParato?: boolean;
 }
 
 export interface IcustomDimensionRule  {
-    dimenstions: [],
-    property: string,
+    dimenstions: Array<string>,
+    mesure: string,
     rule: Function
 }
 
