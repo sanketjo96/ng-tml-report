@@ -1,37 +1,91 @@
-import { IReportConfig, GroupByTransform } from '../report.data';
+import { ITMLViewConfig, SortDirection } from '../report.data';
+import { FormControl } from '@angular/forms';
 
-export const reportConfig: IReportConfig = {
-    groups: [
-        {
-            label: "Aggregate by Complaint Month",
-            groupBy: 'Complaint_Month',
-            groupByTransform: GroupByTransform.toTMLDate,
-            aggregateFields: ['No_of_Complaints', 'Total_Expenses']
-        },
+export class SearchControl {
+    instance: FormControl;
+    data?: Array<any>;
+    selectedVal?: any
+
+    constructor(instance?, data?, predictionList?, selectedList?, selectedVal?) {
+        this.instance = instance || new FormControl();
+        this.data = (data && data.length) ? data : [];
+        this.selectedVal = selectedVal || undefined;
+    }
+}
+
+export class SearchPane {
+    complaint: SearchControl;
+    models: SearchControl;
+    mis: SearchControl;
+    from: SearchControl;
+    to: SearchControl;
+
+    constructor(complaint: SearchControl, models: SearchControl, mis: SearchControl, from: SearchControl, to: SearchControl) {
+        this.complaint = complaint;
+        this.models = models;
+        this.mis = mis;
+        this.from = from;
+        this.to = to;
+    }
+}
+
+
+export const reportConfig: ITMLViewConfig = {
+    views: [
         {
             label: "Aggregate by Models",
-            groupBy: 'Model',
-            aggregateFields: ['No_of_Complaints', 'Total_Expenses']
-        },
-        {
-            label: "Aggregate by Production Month",
-            groupBy: 'Production_Month',
-            aggregateFields: ['No_of_Complaints', 'Total_Expenses']
-        },
-        {
-            label: "Aggregate by Sale Month",
-            groupBy: 'Sale_Month',
-            aggregateFields: ['No_of_Complaints', 'Total_Expenses']
+            dimension: 'Model',
+            measures: ['No_of_Complaints', 'Total_Expenses'],
+            table: {
+                defaultSortmeasure: {
+                    name: 'No_of_Complaints',
+                    direction: SortDirection.desc
+                }
+            }
         },
         {
             label: "Aggregate by Dealer",
-            groupBy: 'Dealer_Code_Description',
-            aggregateFields: ['No_of_Complaints', 'Total_Expenses'],
+            dimension: 'Dealer_Name',
+            measures: ['No_of_Complaints', 'Total_Expenses'],
+            table: {
+                defaultSortmeasure: {
+                    name: 'No_of_Complaints',
+                    direction: SortDirection.desc
+                }
+            }
         },
         {
             label: "Aggregate by Deler's city",
-            groupBy: 'Dealer_City',
-            aggregateFields: ['No_of_Complaints', 'Total_Expenses']
+            dimension: 'Dealer_City',
+            measures: ['No_of_Complaints', 'Total_Expenses'],
+            table: {
+                defaultSortmeasure: {
+                    name: 'No_of_Complaints',
+                    direction: SortDirection.desc
+                }
+            }
+        },
+        {
+            label: "Aggregate by Complaint Month",
+            dimension: 'Complaint_Month',
+            measures: ['No_of_Complaints', 'Total_Expenses'],
+            table: {
+                defaultSortmeasure: {
+                    name: 'No_of_Complaints',
+                    direction: SortDirection.desc
+                }
+            }
+        },
+        {
+            label: "Aggregate by Production Month",
+            dimension: 'Production_Month',
+            measures: ['No_of_Complaints', 'Total_Expenses'],
+            table: {
+                defaultSortmeasure: {
+                    name: 'No_of_Complaints',
+                    direction: SortDirection.desc
+                }
+            }
         }
     ]
 }

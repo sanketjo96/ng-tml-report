@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ReportModule } from './report/report.module';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
+import { GroupDetailsModule } from './group-details/group-details.module';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
     BrowserAnimationsModule,
     MatToolbarModule,
     ReportModule,
+    GroupDetailsModule,
     AppRoutingModule
   ],
   providers: [],

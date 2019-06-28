@@ -1,9 +1,9 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { filter, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { DataService } from 'src/app/core/data/data.service';
-import { IReportConfig, ReportSearch } from '../report.data';
-import { reportConfig } from './search.config';
+import { ITMLViewConfig, ReportSearch } from '../report.data';
+import { reportConfig, SearchPane } from './search.config';
+import { ContextService } from 'src/app/core/context/context.service';
 
 @Component({
   selector: 'app-search',
@@ -13,52 +13,40 @@ import { reportConfig } from './search.config';
 export class SearchComponent implements OnInit {
   viewToggle = true;
   view = 'Table View';
- 
-  complaintGroupSearchControl = new FormControl('');
-  complaintGroups: any = [];
-
-  modelsControl = new FormControl('');
-  modelsGroup: Array<string> = [];
-  selectedModels: Array<string> = []
-
-  misControl = new FormControl('');
-  misGroup: Array<number> = [3, 6, 9, 12, 15, 18, 21, 24];
-  selectedMis: number
-
-  fromComplaintDateControl = new FormControl();
-  selectedFromDate: Date;
+  viewConfig: ITMLViewConfig;
+  sControl: SearchPane;
   
-  toComplaintDateControl = new FormControl();
-  selectedToDate: Date;
-
-  reportConfig: IReportConfig;
-  optionSelected = false;
   @Output() searchParams = new EventEmitter<ReportSearch>();
 
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService, private context: ContextService) { }
 
   ngOnInit() {
-    this.dataService.getModels().subscribe(data => this.modelsGroup = data);
-    this.reportConfig = reportConfig;
+    this.sControl = this.context.preferOldSearchPaneData();
+    this.viewConfig = reportConfig;
+    if (this.sControl.complaint.selectedVal) {
+      this.search(true);
+      return;
+    }
 
-   this.complaintGroupSearchControl.valueChanges.pipe(
+    this.sControl.mis.data = [3, 6, 9, 12, 15, 18, 21, 24];   
+    this.dataService.getModels().subscribe(data => this.sControl.models.data = data);
+    this.sControl.complaint.instance.valueChanges.pipe(
       filter(text => text.length >= 4 && !this.getPredictionObject(text, 'Complaint_Group')),
       debounceTime(10),
       distinctUntilChanged(),
       switchMap((text) => this.dataService.searchComplaintGroup(text))
     ).subscribe((data: any)=> {
-      this.complaintGroups = data.data;
+      this.sControl.complaint.data = data.data;
     });
 
-    this.modelsControl.valueChanges.subscribe(data => this.selectedModels = data);
-    this.misControl.valueChanges.subscribe(data => this.selectedMis = data);
-
-    this.fromComplaintDateControl.valueChanges.subscribe(data => this.selectedFromDate = data);
-    this.toComplaintDateControl.valueChanges.subscribe(data => this.selectedToDate = data);
+    this.sControl.models.instance.valueChanges.subscribe(data => this.sControl.models.selectedVal = data);
+    this.sControl.mis.instance.valueChanges.subscribe(data => this.sControl.mis.selectedVal = data);
+    this.sControl.from.instance.valueChanges.subscribe(data =>  this.sControl.from.selectedVal = data);
+    this.sControl.to.instance.valueChanges.subscribe(data => this.sControl.from.selectedVal = data);
   }
 
   getPredictionObject(text: string, keyToSearch: string) {
-    return this.complaintGroups.find((data) => {
+    return this.sControl.complaint.data.find((data) => {
       return data[keyToSearch] === text;
     });
   }
@@ -69,22 +57,17 @@ export class SearchComponent implements OnInit {
     this.search();
   }
 
-  search() {
-    const selectedComplaintGroupCode = this.complaintGroupSearchControl.value;
-    if (selectedComplaintGroupCode) {
-     const complaint = this.getPredictionObject(selectedComplaintGroupCode, 'Complaint_Group');
+  search(redirection = false) {
+    this.sControl.complaint.selectedVal = this.sControl.complaint.instance.value;
+    if (this.sControl.complaint.selectedVal) {
+     const complaint = this.getPredictionObject(this.sControl.complaint.selectedVal, 'Complaint_Group');
      if (complaint) { 
       const params: ReportSearch = {
-          colConfig: this.reportConfig,
-          complaintPrams: {
-            complaintGroupCode: selectedComplaintGroupCode,
-            complaintGroupDesc: complaint.Complaint_Group_Description,
-            models: this.selectedModels,
-            mis: this.selectedMis,
-            from: this.selectedFromDate,
-            to: this.selectedToDate
-          },
-          view: this.view
+          viewConfig: this.viewConfig,
+          complaintGroupDesc: complaint.Complaint_Group_Description,
+          searchParams: this.sControl,
+          activeView: this.view,
+          redirection
         }
         this.searchParams.emit(params)
       }

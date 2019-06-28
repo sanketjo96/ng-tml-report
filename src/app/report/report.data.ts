@@ -1,24 +1,47 @@
-import { IComplaintFinder } from '../models/complaint';
+import { SearchPane } from './search/search.config';
 
-export enum GroupByTransform {
-    toTMLDate="toTMLDate",
+export enum SortDirection {
+    asc="asc",
+    desc="desc"
 }
 
-interface IReportGroup {
+export interface ISortCol {
+    name: string;
+    direction: SortDirection
+}
+
+export interface ITable {
+    defaultSortmeasure: ISortCol; 
+}
+
+export interface IChart {
+
+}
+
+export interface IcustomDimensionRule  {
+    dimenstions: [],
+    property: string,
+    rule: Function
+}
+
+interface IView {
     label: string;
-    groupBy: string;
-    groupByTransform?: GroupByTransform;
-    aggregateFields?: Array<string>;
-    uniqueListFields?: Array<string>
+    dimension: string,
+    measures: Array<string>,
+    table?: ITable;
+    chart?: IChart;
+    customDimension?: IcustomDimensionRule;
 }
 
-export interface IReportConfig {
-    groups: Array<IReportGroup>
+export interface ITMLViewConfig {
+    views: Array<IView>
 }
 
 
 export interface ReportSearch {
-    colConfig: IReportConfig,
-    complaintPrams: IComplaintFinder
-    view: string
+    complaintGroupDesc?: string,
+    viewConfig: ITMLViewConfig,
+    searchParams: SearchPane
+    activeView: string,
+    redirection: boolean;
 }

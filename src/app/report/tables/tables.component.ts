@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, Output, EventEmitter } from '@angular/core';
 import { ReportService } from '../report.service';
-import { IReportConfig } from '../report.data';
+import { ITMLViewConfig } from '../report.data';
 
 @Component({
   selector: 'app-tables',
@@ -11,16 +11,24 @@ export class TablesComponent implements OnInit, OnChanges {
   data: Array<Array<any>> = [[]];
   displayedColumns: Array<Array<any>> = [];
 
-  @Input() colsConfig: IReportConfig;
+  @Input() viewConfig: ITMLViewConfig;
+  @Output() redirectRequest = new EventEmitter();
 
   constructor(private reportService: ReportService) { }
 
   ngOnInit() {
-      this.displayedColumns = this.reportService.getTableSetCols(this.colsConfig);
+      this.displayedColumns = this.reportService.getTableSetCols(this.viewConfig);
   }
 
   ngOnChanges() {
     this.data = this.reportService.getTablesDataSet();
+  }
+
+  onRowClick(data, index) {
+    const param = {};
+    const primaryCol = this.viewConfig.views[index].dimension;
+    param[primaryCol] = data[primaryCol];
+    this.redirectRequest.emit(param)
   }
 
 }

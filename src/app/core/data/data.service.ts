@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { IComplaintFinder, IComplaint } from 'src/app/models/complaint';
+import { ComplaintFinder, Complaint } from 'src/app/models/complaint';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { UtilService } from '../util/util.service';
@@ -19,16 +19,18 @@ export class DataService {
     );
   }
 
-  findComplaints(finder: IComplaintFinder): Observable<Array<IComplaint>> {
+  findComplaints(finder: ComplaintFinder): Observable<Array<Complaint>> {
     const complaintGroupCode = finder.complaintGroupCode;
-    return this.http.get(`${this.base_url}/getcomplaints/${complaintGroupCode}`, { 
-      params: new HttpParams()
-        .set('models', finder.models.join(','))
-        .set('mis', finder.mis.toString())
-        .set('from', `${this.util.getMonthFromIndex(finder.from.getMonth())}-${finder.from.getFullYear()}`)
-        .set('to', `${this.util.getMonthFromIndex(finder.to.getMonth())}-${finder.to.getFullYear()}`)
-    }).pipe(
-      map((data: any) => <Array<IComplaint>> data.data )
+    let processedFinder: any = {
+      models: finder.models ? finder.models.join(',') : undefined,
+      mis: finder.mis ? finder.mis.toString() : undefined,
+      from: finder.from ? this.util.getTMLDateFormat(finder.from) : undefined,
+      to: finder.to ? this.util.getTMLDateFormat(finder.to) : undefined
+    };
+
+    const params: HttpParams = this.util.getOptionalParamsForRequest(processedFinder);
+    return this.http.get(`${this.base_url}/getcomplaints/${complaintGroupCode}`, {params}).pipe(
+      map((data: any) => <Array<Complaint>> data.data )
     );
   }
 

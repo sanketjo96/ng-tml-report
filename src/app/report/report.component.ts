@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { IReportConfig, ReportSearch } from './report.data';
+import { ITMLViewConfig, ReportSearch } from './report.data';
 import { DataService } from '../core/data/data.service';
-import { IComplaint } from '../models/complaint';
+import { Complaint } from '../models/complaint';
 import { ReportService } from './report.service';
+import { ContextService } from '../core/context/context.service';
+import { SearchPane } from './search/search.config';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-report',
@@ -12,10 +15,15 @@ import { ReportService } from './report.service';
 export class ReportComponent implements OnInit {
   view: string = '';
   reportLabel: string;
-  colsConfig: IReportConfig = null;
+  viewsConfig: ITMLViewConfig = null;
+  isDataPresent = false;
+  searchParams: SearchPane;
+
   constructor(
     private dataService: DataService, 
     private reportService: ReportService,
+    private context: ContextService,
+    private router: Router,
   ) { }
 
   ngOnInit() {
@@ -23,12 +31,42 @@ export class ReportComponent implements OnInit {
   }
 
   onSearch(params: ReportSearch) {
-    this.dataService.findComplaints(params.complaintPrams).subscribe((data: Array<IComplaint>) => {
-      this.reportLabel = `${params.complaintPrams.complaintGroupCode} - ${params.complaintPrams.complaintGroupDesc}`;
-      this.reportService.getGroupedData(data, params.colConfig);
-      this.colsConfig = JSON.parse(JSON.stringify(params.colConfig));
-      this.view = params.view;
+    this.searchParams = params.searchParams;
+    if (params.redirection) {
+      this.setReport(params, this.reportService.groupedData);
+      return;
+    }
+
+    this.dataService.findComplaints({
+      complaintGroupCode:  this.searchParams.complaint.selectedVal,
+      models:  this.searchParams.models.selectedVal,
+      from:  this.searchParams.from.selectedVal,
+      to:  this.searchParams.to.selectedVal,
+      mis:  this.searchParams.mis.selectedVal
+    }).subscribe((data: Array<Complaint>) => {
+      this.reportService.getGroupedData(data, params.viewConfig);
+      this.setReport(params, this.reportService.groupedData);
     });
+  }
+
+  setReport(params: ReportSearch, data) {
+    this.reportLabel = `${params.searchParams.complaint.selectedVal} - ${params.complaintGroupDesc}`;
+    this.viewsConfig = JSON.parse(JSON.stringify(params.viewConfig));
+    this.isDataPresent = (data && Object.keys(data).length)
+      ? true
+      : false
+    ; 
+    this.view = params.activeView;
+    this.context.setSearchPaneData(params.searchParams);
+  }
+
+  onRedirect(data) {
+    const redirectParam = {
+      ...data
+    };
+
+    this.context.setComplaintDetails(this.reportService.rawData);
+    this.router.navigate(['/details', redirectParam]);
   }
 
 }
