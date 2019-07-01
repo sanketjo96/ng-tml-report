@@ -19,7 +19,7 @@ export class DetailsComponent implements OnInit {
   constructor(private context: ContextService, private activeRoute: ActivatedRoute, private details: DetailsService) { }
 
   ngOnInit() {
-    this.cols = ['Dealer_Name', 'VC_Number', 'Model', 'Production_Month', 'Customer_Complaint', 'Investigation', 'Action_Taken']
+    this.cols = ['Dealer_Name', 'VC_Number', 'VC_Description', 'Model', 'Production_Month', 'Customer_Complaint', 'Investigation']
     this.activeRoute.paramMap.subscribe((params: any) => {
       const paramKey = Object.keys(params.params)[0];
       this.detailsLabel = `Complaints where ${paramKey} - ${params.params[paramKey]}`;

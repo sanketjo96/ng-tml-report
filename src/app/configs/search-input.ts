@@ -1,39 +1,23 @@
-import { ITMLViewConfig, SortDirection } from '../report.data';
-import { FormControl } from '@angular/forms';
-
-export class SearchControl {
-    instance: FormControl;
-    data?: Array<any>;
-    selectedVal?: any
-
-    constructor(instance?, data?, predictionList?, selectedList?, selectedVal?) {
-        this.instance = instance || new FormControl();
-        this.data = (data && data.length) ? data : [];
-        this.selectedVal = selectedVal || undefined;
-    }
-}
-
-export class SearchPane {
-    complaint: SearchControl;
-    models: SearchControl;
-    mis: SearchControl;
-    from: SearchControl;
-    to: SearchControl;
-
-    constructor(complaint: SearchControl, models: SearchControl, mis: SearchControl, from: SearchControl, to: SearchControl) {
-        this.complaint = complaint;
-        this.models = models;
-        this.mis = mis;
-        this.from = from;
-        this.to = to;
-    }
-}
-
+import { SortDirection, ITMLViewConfig, Contributors } from '../report/report.data';
 
 export const reportConfig: ITMLViewConfig = {
     views: [
         {
-            label: "Aggregate by Models",
+            label: "MIS wise",
+            dimension: 'mis',
+            measures: ['No_of_Complaints', 'Total_Expenses'],
+            table: {
+                defaultSortmeasure: {
+                    name: 'No_of_Complaints',
+                    direction: SortDirection.desc
+                }
+            },
+            chart: {
+                noParato: true,
+            },
+        },
+        {
+            label: "Models wise",
             dimension: 'Model',
             measures: ['No_of_Complaints', 'Total_Expenses'],
             table: {
@@ -44,7 +28,7 @@ export const reportConfig: ITMLViewConfig = {
             }
         },
         {
-            label: "Aggregate by Kms Covered",
+            label: "Kms wise",
             dimension: 'km_buckets',
             measures: ['No_of_Complaints', 'Total_Expenses'],
             table: {
@@ -52,10 +36,12 @@ export const reportConfig: ITMLViewConfig = {
                     name: 'No_of_Complaints',
                     direction: SortDirection.desc
                 }
+            },
+            chart: {
             }
         },
         {
-            label: "Aggregate by Chassis_No",
+            label: "Chassis_No wise",
             dimension: 'Chassis_No',
             measures: ['No_of_Complaints', 'Total_Expenses'],
             table: {
@@ -63,10 +49,12 @@ export const reportConfig: ITMLViewConfig = {
                     name: 'No_of_Complaints',
                     direction: SortDirection.desc
                 }
+            },
+            chart: {
             }
         },
         {
-            label: "Aggregate by Dealer",
+            label: "Dealer wise",
             dimension: 'Dealer_Name',
             measures: ['No_of_Complaints', 'Total_Expenses'],
             table: {
@@ -74,10 +62,18 @@ export const reportConfig: ITMLViewConfig = {
                     name: 'No_of_Complaints',
                     direction: SortDirection.desc
                 }
+            },
+            chart: {
+                summary: {
+                    contributors: [
+                        Contributors.topContributer,
+                        Contributors.eightyPerContributors
+                    ]
+                }
             }
         },
         {
-            label: "Aggregate by Deler's city",
+            label: "Deler's city wise",
             dimension: 'Dealer_City',
             measures: ['No_of_Complaints', 'Total_Expenses'],
             table: {
@@ -85,10 +81,18 @@ export const reportConfig: ITMLViewConfig = {
                     name: 'No_of_Complaints',
                     direction: SortDirection.desc
                 }
+            },
+            chart: {
+                summary: {
+                    contributors: [
+                        Contributors.topContributer,
+                        Contributors.eightyPerContributors
+                    ]
+                }
             }
         },
         {
-            label: "Aggregate by Complaint Month",
+            label: "Complaint Month wise",
             dimension: 'Complaint_Month',
             measures: ['No_of_Complaints', 'Total_Expenses'],
             table: {
@@ -99,7 +103,7 @@ export const reportConfig: ITMLViewConfig = {
             }
         },
         {
-            label: "Aggregate by Production Month",
+            label: "Production Month wise",
             dimension: 'Production_Month',
             measures: ['No_of_Complaints', 'Total_Expenses'],
             table: {
@@ -107,16 +111,13 @@ export const reportConfig: ITMLViewConfig = {
                     name: 'No_of_Complaints',
                     direction: SortDirection.desc
                 }
-            }
-        },
-        {
-            label: "Aggregate by Sale Month",
-            dimension: 'Sale_Month',
-            measures: ['No_of_Complaints', 'Total_Expenses'],
-            table: {
-                defaultSortmeasure: {
-                    name: 'No_of_Complaints',
-                    direction: SortDirection.desc
+            },
+            chart: {
+                summary: {
+                    contributors: [
+                        Contributors.topContributer,
+                        Contributors.eightyPerContributors
+                    ]
                 }
             }
         }

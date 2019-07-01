@@ -1,4 +1,15 @@
-import { SearchPane } from './search/search.config';
+import { SearchPane } from './search/search.data';
+
+export enum Contributors {
+    topContributer="Top Contributor",
+    bottomContributor='Bottom Contributor',
+    eightyPerContributors='80% Contribution',
+    topThreeContributors='Top three Contributors',
+}
+
+export interface Summary {
+    contributors: Array<Contributors>;
+} 
 
 export enum SortDirection {
     asc="asc",
@@ -17,12 +28,7 @@ export interface ITable {
 export interface IChart {
     mesureToPlot?: Array<string>;
     noParato?: boolean;
-}
-
-export interface IcustomDimensionRule  {
-    dimenstions: Array<string>,
-    mesure: string,
-    rule: Function
+    summary?: Summary;
 }
 
 interface IView {
@@ -31,7 +37,6 @@ interface IView {
     measures: Array<string>,
     table?: ITable;
     chart?: IChart;
-    customDimension?: IcustomDimensionRule;
 }
 
 export interface ITMLViewConfig {

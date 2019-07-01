@@ -4,12 +4,12 @@
   </div>
 
   <div class="tml-report-viewer" *ngIf="isDataPresent; else elseBlock">
-      <h4>{{reportLabel}}</h4>
+      <h4>{{reportLabel}}</h4> 
       <div class="tml-table" *ngIf="view === 'Table View'">
         <app-tables [viewConfig]="viewsConfig" (redirectRequest)="onRedirect($event)"></app-tables>
       </div>
       <div class="tml-chart" *ngIf="view === 'Chart View'">
-        <report-charts [viewConfig]="viewsConfig"></report-charts>
+        <report-charts [viewConfig]="viewsConfig" [selectedModels]="selectedModels"></report-charts>
       </div>
   </div>
 

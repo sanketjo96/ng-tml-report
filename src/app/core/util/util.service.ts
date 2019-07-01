@@ -27,6 +27,12 @@ export class UtilService {
     return optionalPramas;
   }
 
+  getClosestNumber(data, goal) {
+   return data.reduce(function(prev, curr) {
+      return (Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev);
+    });
+  }
+
   masterSort(data, keyName: string, isAsc: boolean) {
     const pattern = new RegExp('month', 'ig');
     const stringToMatch = pattern.test(keyName) ? 'Month' : keyName;

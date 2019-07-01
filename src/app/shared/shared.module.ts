@@ -24,6 +24,7 @@ import { TmlBarChartComponent } from './tml-chart/tml-bar-chart.component';
     FormsModule,
     ReactiveFormsModule,
     MatInputModule,
+    MatTooltipModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatButtonModule,

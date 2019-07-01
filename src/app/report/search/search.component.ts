@@ -2,8 +2,9 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { filter, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { DataService } from 'src/app/core/data/data.service';
 import { ITMLViewConfig, ReportSearch } from '../report.data';
-import { reportConfig, SearchPane } from './search.config';
+import { SearchPane } from './search.data';
 import { ContextService } from 'src/app/core/context/context.service';
+import { reportConfig } from 'src/app/configs/search-input';
 
 @Component({
   selector: 'app-search',
@@ -12,7 +13,7 @@ import { ContextService } from 'src/app/core/context/context.service';
 })
 export class SearchComponent implements OnInit {
   viewToggle = true;
-  view = 'Table View';
+  view = 'Chart View';
   viewConfig: ITMLViewConfig;
   sControl: SearchPane;
   
@@ -53,7 +54,7 @@ export class SearchComponent implements OnInit {
   
   onViewChange() {
     this.viewToggle = !this.viewToggle;
-    this.view = this.viewToggle ? 'Table View' : 'Chart View';
+    this.view = this.viewToggle ? 'Chart View' : 'Table View';
     this.search();
   }
 

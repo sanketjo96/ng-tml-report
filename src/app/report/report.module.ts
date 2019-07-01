@@ -14,6 +14,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ChartsComponent } from './charts/charts.component';
+import { InferenceModalComponent } from './inference/inference.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -21,9 +23,11 @@ import { ChartsComponent } from './charts/charts.component';
     SearchComponent,
     TablesComponent,
     ChartsComponent,
+    InferenceModalComponent,
   ],
   imports: [
     CommonModule,
+    MatDialogModule,
     ReactiveFormsModule,
     SharedModule,
     MatSlideToggleModule,

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SearchPane, SearchControl } from 'src/app/report/search/search.config';
+import { SearchPane, SearchControl } from 'src/app/report/search/search.data';
 import { Complaint } from 'src/app/models/complaint';
 
 @Injectable({

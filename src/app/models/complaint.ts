@@ -1,4 +1,5 @@
 import { UtilService } from '../core/util/util.service';
+import { KmBuckets, Mis } from '../configs/complaint';
 
 export interface ComplaintFinder {
     complaintGroupCode: string,
@@ -7,26 +8,6 @@ export interface ComplaintFinder {
     to?: Date;
     mis?: number
 }
-
-
-export const KmBuckets = [
-    {
-        min: 10000,
-        max: 25000
-    },
-    {
-        min: 25000,
-        max: 50000
-    },
-    {
-        min: 50000,
-        max: 100000
-    },
-    {
-        min: 100000,
-        max: 1000000
-    }
-];
 
 export class Complaint {
     _id: string;
@@ -79,10 +60,7 @@ export class Complaint {
             );
         });
 
-        this.km_buckets = kmbucket 
-            ? `${kmbucket.min.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} - ${kmbucket.max.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}` 
-            : 'Above 1000000'
-        ;
+        this.km_buckets = kmbucket ? kmbucket.label : 'Above 1,00,000 Km';
         
         this.Complaint_Group = data.Complaint_Group;
         this.Complaint_Group_Description = data.Complaint_Group_Description;
@@ -90,7 +68,17 @@ export class Complaint {
         this.Complaint_Code_Description = data.Complaint_Code_Description;
         this.Sale_Month = data.Sale_Month;
         this.Complaint_Month = util.getTMLDateFormat(new Date(data.Complaint_Month));
-        this.mis = data.Diff_between_Complaint_Sales_Month;
+       
+        const misMonth = parseInt(data.Diff_between_Complaint_Sales_Month, 10);
+        const misBucket = Mis.find(item => {
+            return (
+                item.min <= misMonth
+                && item.max >= misMonth
+            );
+        });
+
+        this.mis = misBucket.label; 
+        
         this.No_of_Complaints = parseInt(data.No_of_Complaints, 10) ? parseInt(data.No_of_Complaints, 10) : 0;
         this.Total_Expenses = parseInt(data.Total_Expenses, 10) ? parseInt(data.Total_Expenses, 10) : 0;
         this.Customer_Complaint = data.Customer_Complaint;

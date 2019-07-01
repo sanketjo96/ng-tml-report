@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Complaint, ComplainList } from '../models/complaint';
-import { ITMLViewConfig } from './report.data';
+import { ITMLViewConfig, Summary, Contributors } from './report.data';
 import { UtilService } from '../core/util/util.service';
 import { Dset, TMLChartData, ChartType } from './charts/chart.data';
+import { ɵINTERNAL_BROWSER_DYNAMIC_PLATFORM_PROVIDERS } from '@angular/platform-browser-dynamic';
 
 @Injectable({
     providedIn: 'root'
@@ -55,9 +56,11 @@ export class ReportService {
      */
     getTableSetCols(config: ITMLViewConfig) {
         const tablescol = [];
-        for (let k=0; k< config.views.length; k++) {
+        const views = config.views;
+        const viewsLength = views.length;
+        for (let k=0; k < viewsLength; k++) {
             const col = [];
-            const view = config.views[k]; 
+            const view = views[k]; 
             col.push(view.dimension);
             const updatedCol = col.concat(view.measures);
             tablescol.push(updatedCol);
@@ -130,16 +133,88 @@ export class ReportService {
 
                 const sorted = this.sortDecendingByMesure(currentDimData, mesure);
                 dataset.data = sorted.data;
-                
                 chart.datasets.push(dataset);
+
+                let paratoData;
                 if (!view.chart || !view.chart.noParato) {
-                    chart.datasets.push(this.getParatoDataSet(dataset.data));
+                    paratoData = this.getParatoDataSet(dataset.data);
+                    chart.datasets.push(paratoData);
                 }
                 chart.labels = sorted.labels;
+                
+                if (
+                    view.chart 
+                    && view.chart.summary 
+                    && view.chart.summary.contributors
+                    && view.chart.summary.contributors.length
+                ) {
+                    chart.summary = this.getSummary(
+                        view.chart.summary.contributors,
+                        chart.labels,
+                        dataset.data,
+                        paratoData && paratoData.data ? paratoData.data : null
+                    );
+                }
+
             }
             charts.push(chart);
         }
         return charts;
+    }
+
+    getSummary(criterias: Array<Contributors>, labels: any, data: any, paratoData: any): Array<any> {
+        var summary = [];
+        for (let criteria of criterias) {
+            const indicator: any = {};
+            indicator.name = criteria; 
+ 
+            switch (criteria) {
+                case Contributors.topContributer: {
+                    const topData = data[0];
+                    indicator.data = topData;
+                    indicator.matchedLabels = this.getAllLabelsForMesures(labels, topData, data);
+                    break;
+                }
+                case Contributors.bottomContributor: {
+                    const botData = data[data.length - 1];
+                    indicator.data = botData;
+                    indicator.matchedLabels = this.getAllLabelsForMesures(labels, botData, data); 
+                    break;
+                }
+                case Contributors.eightyPerContributors: {
+                    if (paratoData) {
+                        const closestParatoData = this.util.getClosestNumber(paratoData, 80);
+                        const closestParatoIndex = paratoData.indexOf(closestParatoData);
+                        const eightyPerData = data[closestParatoIndex];
+                        indicator.matchedLabels = this.getAllLabelsForMesures(labels, eightyPerData, data, true, closestParatoIndex);
+                    }
+                    break;
+ 
+                }
+            }
+            summary.push(indicator);
+        }
+        return summary;
+    }
+
+    getAllLabelsForMesures(labels: any, mesureVal: number, data: any, lte: boolean = false, upToIndex?: number) {
+        return data.map((item, index) => {
+            if (
+                item === mesureVal
+                || (lte && item >= mesureVal)
+            ) {
+                if(
+                    !upToIndex
+                    || (upToIndex >= index)
+                ) {
+                    let label = labels[index];
+                    if (!lte) {
+                        label += ` (${mesureVal} complaints)`;
+                    }
+                    return label; 
+                }
+            }
+        }).filter(data => data);
     }
 
     /**

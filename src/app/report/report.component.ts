@@ -4,7 +4,7 @@ import { DataService } from '../core/data/data.service';
 import { Complaint } from '../models/complaint';
 import { ReportService } from './report.service';
 import { ContextService } from '../core/context/context.service';
-import { SearchPane } from './search/search.config';
+import { SearchPane } from './search/search.data';
 import { Router } from '@angular/router';
 
 @Component({
@@ -18,12 +18,13 @@ export class ReportComponent implements OnInit {
   viewsConfig: ITMLViewConfig = null;
   isDataPresent = false;
   searchParams: SearchPane;
+  selectedModels: Array<string> = [];
 
   constructor(
     private dataService: DataService, 
     private reportService: ReportService,
     private context: ContextService,
-    private router: Router,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -37,6 +38,7 @@ export class ReportComponent implements OnInit {
       return;
     }
 
+    this.selectedModels = this.searchParams.models.selectedVal;
     this.dataService.findComplaints({
       complaintGroupCode:  this.searchParams.complaint.selectedVal,
       models:  this.searchParams.models.selectedVal,
@@ -68,5 +70,4 @@ export class ReportComponent implements OnInit {
     this.context.setComplaintDetails(this.reportService.rawData);
     this.router.navigate(['/details', redirectParam]);
   }
-
 }

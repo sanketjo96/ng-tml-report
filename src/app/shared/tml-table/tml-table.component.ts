@@ -23,8 +23,8 @@ export class TmlTableComponent implements AfterViewInit, OnInit {
   @Input() tableLable: string = '';
   @Input() pageSize: number = 5;
   @Input() defaultColToSort: ISortCol;
+  @Input() colDef?: any = null;
  
-
   @Output() tableRowClick = new EventEmitter<RefCol>();
 
   dataSource: TmlTableDataSource;
@@ -34,6 +34,7 @@ export class TmlTableComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit() {
+    console.log(this.colDef)
     this.dataSource = new TmlTableDataSource(this.data, this.utilServ);
   }
 

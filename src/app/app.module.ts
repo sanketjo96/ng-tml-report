@@ -8,8 +8,9 @@ import { AppComponent } from './app.component';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ReportModule } from './report/report.module';
-import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
+import { PagenotfoundComponent } from './core/pagenotfound/pagenotfound.component';
 import { GroupDetailsModule } from './group-details/group-details.module';
+import { InferenceModalComponent } from './report/inference/inference.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,9 @@ import { GroupDetailsModule } from './group-details/group-details.module';
     ReportModule,
     GroupDetailsModule,
     AppRoutingModule
+  ],
+  entryComponents: [
+    InferenceModalComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

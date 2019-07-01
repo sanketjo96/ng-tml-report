@@ -7,7 +7,17 @@
     <ng-container *ngFor="let col of displayedColumns">
       <ng-container matColumnDef="{{ col }}">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ col }}</th>
-        <td mat-cell *matCellDef="let row">{{row[col]}}</td>
+        <td mat-cell *matCellDef="let row">
+          <ng-container *ngIf="colDef && colDef[col] && colDef[col].list; else normalcol">
+            <ul>
+              <li *ngFor="let val of row[col]">{{val}}</li>
+            </ul>
+          </ng-container>  
+          
+          <ng-template #normalcol>
+              {{row[col]}}
+          </ng-template>     
+        </td>
       </ng-container>
     </ng-container>
 

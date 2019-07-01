@@ -1,6 +1,7 @@
 export enum ChartType {
     line="line",
-    bar="bar"
+    bar="bar",
+    pie="pie"
 }
 
 export interface Dset {
@@ -18,4 +19,5 @@ export interface TMLChartData {
     labels?: Array<string>
     options?: Array<any>;
     legend?: boolean;
+    summary?: Array<any>;
 }
