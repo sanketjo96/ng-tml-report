@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Complaint, ComplainList } from '../models/complaint';
-import { ITMLViewConfig, Summary, Contributors } from './report.data';
+import { ITMLViewConfig, Contributors } from './report.data';
 import { UtilService } from '../core/util/util.service';
-import { Dset, TMLChartData, ChartType } from './charts/chart.data';
-import { ɵINTERNAL_BROWSER_DYNAMIC_PLATFORM_PROVIDERS } from '@angular/platform-browser-dynamic';
+import { Dset, TMLChartData, ChartType, IHighlight } from './charts/chart.data';
 
 @Injectable({
     providedIn: 'root'
@@ -95,7 +94,7 @@ export class ReportService {
         return tables;
     }
 
-    getChartDataSetObject(type: ChartType, label, fill: boolean, yAxisID?, data?: any) {
+    getChartDataSetObject(type: ChartType, label, fill: boolean, yAxisID?, data?: any): Dset {
         let dataset: Dset = {};
         dataset.type = type;
         dataset.fill = fill;
@@ -132,27 +131,38 @@ export class ReportService {
                 );
 
                 const sorted = this.sortDecendingByMesure(currentDimData, mesure);
-                dataset.data = sorted.data;
-                chart.datasets.push(dataset);
-
-                let paratoData;
-                if (!view.chart || !view.chart.noParato) {
-                    paratoData = this.getParatoDataSet(dataset.data);
+                let paratoData: Dset;
+                let closestParatoIndex;
+                if (!view.chart || !view.chart.noParato || sorted.data.length <= 1) {
+                    paratoData = this.getParatoDataSet(sorted.data);
+                    const closestParatoData = this.util.getClosestNumber(paratoData.data, 80);
+                    closestParatoIndex = paratoData.data.indexOf(closestParatoData);
+                    paratoData.borderWidth = 1;
+                    // Push line chart data here.
                     chart.datasets.push(paratoData);
                 }
+
+                // Push bar chart data with coloring info here.
+                dataset.data = sorted.data;
+                const fillIndex = closestParatoIndex ? (closestParatoIndex + 1) : dataset.data.length;
+                dataset.backgroundColor = new Array(dataset.data.length).fill('rgba(0, 0, 255, 0.4)', 0, fillIndex);
+                dataset.showMesureOnTop = true;
+                chart.datasets.push(dataset);
                 chart.labels = sorted.labels;
                 
+                // If user selects a single model, app provides
+                // quick summary with highlights 
                 if (
                     view.chart 
                     && view.chart.summary 
                     && view.chart.summary.contributors
                     && view.chart.summary.contributors.length
                 ) {
-                    chart.summary = this.getSummary(
+                    chart.highlights = this.getSummary(
                         view.chart.summary.contributors,
                         chart.labels,
                         dataset.data,
-                        paratoData && paratoData.data ? paratoData.data : null
+                        closestParatoIndex ? closestParatoIndex : undefined
                     );
                 }
 
@@ -162,57 +172,53 @@ export class ReportService {
         return charts;
     }
 
-    getSummary(criterias: Array<Contributors>, labels: any, data: any, paratoData: any): Array<any> {
-        var summary = [];
+    getSummary(criterias: Array<Contributors>, labels: Array<string>, data: any, closestParatoIndex: number): Array<IHighlight>  {
+        const higlights: Array<IHighlight> = [];
         for (let criteria of criterias) {
-            const indicator: any = {};
-            indicator.name = criteria; 
+            const indicator: IHighlight = {};
+            indicator.name = criteria;
+            indicator.tabularize = true;
  
             switch (criteria) {
                 case Contributors.topContributer: {
                     const topData = data[0];
                     indicator.data = topData;
-                    indicator.matchedLabels = this.getAllLabelsForMesures(labels, topData, data);
+                    indicator.matchedLabels = this.findPossibleLabelsForMesure(data, labels, topData);
                     break;
                 }
                 case Contributors.bottomContributor: {
                     const botData = data[data.length - 1];
                     indicator.data = botData;
-                    indicator.matchedLabels = this.getAllLabelsForMesures(labels, botData, data); 
+                    indicator.matchedLabels = this.findPossibleLabelsForMesure(data, labels, botData); 
                     break;
                 }
                 case Contributors.eightyPerContributors: {
-                    if (paratoData) {
-                        const closestParatoData = this.util.getClosestNumber(paratoData, 80);
-                        const closestParatoIndex = paratoData.indexOf(closestParatoData);
-                        const eightyPerData = data[closestParatoIndex];
-                        indicator.matchedLabels = this.getAllLabelsForMesures(labels, eightyPerData, data, true, closestParatoIndex);
+                    if (closestParatoIndex) {
+                        indicator.matchedLabels = this.findPossibleLabelsForMesure(data, labels, null, closestParatoIndex);
                     }
                     break;
- 
+                }
+                case Contributors.repeatContributor: {
+                    const firstIndexWhereMesureValIsOne = data.indexOf(1);
+                    indicator.matchedLabels = this.findPossibleLabelsForMesure(data, labels, null, firstIndexWhereMesureValIsOne - 1);
+                    break;
                 }
             }
-            summary.push(indicator);
+            higlights.push(indicator);
         }
-        return summary;
+        return higlights;
     }
 
-    getAllLabelsForMesures(labels: any, mesureVal: number, data: any, lte: boolean = false, upToIndex?: number) {
-        return data.map((item, index) => {
+    findPossibleLabelsForMesure(data: any, labels: any, mesureVal: number, upToIndex?: number) {
+        return data.map((value, index) => {
             if (
-                item === mesureVal
-                || (lte && item >= mesureVal)
+                value === mesureVal
+                || (upToIndex && upToIndex >= index)
             ) {
-                if(
-                    !upToIndex
-                    || (upToIndex >= index)
-                ) {
-                    let label = labels[index];
-                    if (!lte) {
-                        label += ` (${mesureVal} complaints)`;
-                    }
-                    return label; 
-                }
+                let label = labels[index];
+                const mesure = mesureVal ? mesureVal : value;
+                label += ` (${mesure} complaints)`;
+                return label; 
             }
         }).filter(data => data);
     }

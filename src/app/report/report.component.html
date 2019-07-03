@@ -9,7 +9,7 @@
         <app-tables [viewConfig]="viewsConfig" (redirectRequest)="onRedirect($event)"></app-tables>
       </div>
       <div class="tml-chart" *ngIf="view === 'Chart View'">
-        <report-charts [viewConfig]="viewsConfig" [selectedModels]="selectedModels"></report-charts>
+        <report-charts [viewConfig]="viewsConfig" [detailsForSummary]="detailsForSummary"></report-charts>
       </div>
   </div>
 

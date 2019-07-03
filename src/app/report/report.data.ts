@@ -2,9 +2,9 @@ import { SearchPane } from './search/search.data';
 
 export enum Contributors {
     topContributer="Top Contributor",
-    bottomContributor='Bottom Contributor',
     eightyPerContributors='80% Contribution',
-    topThreeContributors='Top three Contributors',
+    bottomContributor='Bottom Contributor',
+    repeatContributor='Repeat Contributor',
 }
 
 export interface Summary {

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { ITMLViewConfig } from '../report.data';
 import { ReportService } from '../report.service';
-import { TMLChartData } from './chart.data';
+import { TMLChartData, ISummary } from './chart.data';
 
 import { MatDialog } from '@angular/material/dialog';
 import { InferenceModalComponent } from '../inference/inference.component';
@@ -13,7 +13,7 @@ import { InferenceModalComponent } from '../inference/inference.component';
 })
 export class ChartsComponent implements OnInit, OnChanges {
   @Input() viewConfig: ITMLViewConfig;
-  @Input() selectedModels: Array<string>;
+  @Input() detailsForSummary: ISummary;
   data: Array<TMLChartData> = [];
 
   constructor(private reportService: ReportService, public dialog: MatDialog) { }
@@ -23,15 +23,13 @@ export class ChartsComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     this.data = this.reportService.getChartsDataSet(this.viewConfig);
+    this.detailsForSummary.charts = this.data;
   }
 
   openInfereance() {
     this.dialog.open(InferenceModalComponent, {
       width: '1200px',
-      data: {
-        data: this.data,
-        models: this.selectedModels
-      }
+      data: this.detailsForSummary
     });
   }
 }

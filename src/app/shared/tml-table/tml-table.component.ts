@@ -34,7 +34,6 @@ export class TmlTableComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit() {
-    console.log(this.colDef)
     this.dataSource = new TmlTableDataSource(this.data, this.utilServ);
   }
 

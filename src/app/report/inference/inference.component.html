@@ -1,12 +1,21 @@
 <h1 mat-dialog-title>Quick Inferance</h1>
-<div mat-dialog-content width="1000px">
+<div mat-dialog-content>
+  
+  <mat-card class="header">
+    <mat-card-content>
+      <div><b>Complaint Description : </b> {{ data.ccdes }}</div>
+      <div><b>Complaint Code : </b> {{ data.ccode }} </div> 
+      <div><b>Model : </b>{{ data.model }}</div>
+    </mat-card-content>
+  </mat-card>
+
     <tml-table
-    [tableLable]="title"
+    [tableLable]="'Highlights Of Top contributors'"
     [colDef]="colDef"
     [tableLable]="Summary"
     class="dt-table" 
     [pageSize]="10"
     [displayedColumns]="cols"
-    [data]="tableData">
+    [data]="highlightsTableData">
   </tml-table>
 </div>

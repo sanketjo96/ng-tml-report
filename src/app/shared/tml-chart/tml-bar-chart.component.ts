@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { TMLChartData } from 'src/app/report/charts/chart.data';
+import { TMLChartData, Dset } from 'src/app/report/charts/chart.data';
+import { chartOptions } from './chart-options-conf';
 
 @Component({
   selector: 'tml-bar-chart',
@@ -11,38 +12,7 @@ export class TmlBarChartComponent implements OnInit {
   chartOptions: any
 
   ngOnInit() {
-    this.chartOptions = {
-      responsive: true,
-      title: {
-        display: true,
-        text: this.chartData.title
-      },
-      scales: {
-        yAxes: [
-          {
-            id: 'left',
-            position: 'left',
-            ticks: {
-              min: 0,
-              max: this.chartData.datasets[0].data[this.chartData.datasets[0].data.length]
-            }
-          },
-          {
-            id: 'right',
-            position: 'right',
-            gridLines: {
-              display: false
-            },
-            ticks: {
-              min: 0,
-              max: 100,
-              callback: (value, index, values) => {
-                return value + "%";
-              }
-            }     
-          }
-        ]
-      }
-    }
+    this.chartOptions = chartOptions;
+    this.chartOptions.title.text = this.chartData.title
   }
 }

@@ -1,6 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Contributors } from '../report.data';
+import { InferanceService } from './inferance.service';
+import { IHighlight, ISummary } from '../charts/chart.data';
 
 @Component({
   selector: 'inference-modal',
@@ -19,27 +21,17 @@ export class InferenceModalComponent implements OnInit {
       list: true
     }
   }
-  tableData: Array<any> = [];
+  highlightsTableData: Array<IHighlight>;
   
   constructor(
     public dialogRef: MatDialogRef<InferenceModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    private inferanceService: InferanceService,
+    @Inject(MAT_DIALOG_DATA) public data: ISummary
     ) {
-      this.title = `Summary for Model(s) - ${data.models}`;
     }
 
   ngOnInit() {
-    for(let item of this.data.data) {
-      if (item.summary && item.summary.length) {
-        const row = {};
-        row['Dimention'] = item.title
-        for(let sumItem of item.summary) {
-          row[sumItem.name] = sumItem.matchedLabels,
-          row['col-list'] = true;
-        }
-        this.tableData.push(row);
-      }
-    }
+    this.highlightsTableData = this.inferanceService.getContributorsTableData(this.data.charts);
   }
 
 }

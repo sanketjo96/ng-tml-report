@@ -38,6 +38,11 @@ export const reportConfig: ITMLViewConfig = {
                 }
             },
             chart: {
+                summary: {
+                    contributors: [
+                        Contributors.topContributer,
+                    ]
+                }
             }
         },
         {
@@ -51,6 +56,12 @@ export const reportConfig: ITMLViewConfig = {
                 }
             },
             chart: {
+                summary: {
+                    contributors: [
+                        Contributors.topContributer,
+                        Contributors.eightyPerContributors
+                    ]
+                }
             }
         },
         {

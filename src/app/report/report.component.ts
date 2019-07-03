@@ -6,6 +6,7 @@ import { ReportService } from './report.service';
 import { ContextService } from '../core/context/context.service';
 import { SearchPane } from './search/search.data';
 import { Router } from '@angular/router';
+import { ISummary } from './charts/chart.data';
 
 @Component({
   selector: 'app-report',
@@ -19,6 +20,7 @@ export class ReportComponent implements OnInit {
   isDataPresent = false;
   searchParams: SearchPane;
   selectedModels: Array<string> = [];
+  detailsForSummary: ISummary;
 
   constructor(
     private dataService: DataService, 
@@ -28,7 +30,6 @@ export class ReportComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    
   }
 
   onSearch(params: ReportSearch) {
@@ -59,6 +60,11 @@ export class ReportComponent implements OnInit {
       : false
     ; 
     this.view = params.activeView;
+    this.detailsForSummary = {
+      ccdes: params.complaintGroupDesc,
+      ccode: params.searchParams.complaint.selectedVal,
+      model: (params.searchParams.models.selectedVal.length == 1) ? params.searchParams.models.selectedVal[0] : undefined
+    } 
     this.context.setSearchPaneData(params.searchParams);
   }
 
