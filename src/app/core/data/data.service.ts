@@ -9,7 +9,7 @@ import { UtilService } from '../util/util.service';
   providedIn: 'root'
 })
 export class DataService {
-  private base_url = "http://localhost:3001";
+  private base_url = "https://tml-report.herokuapp.com";
 
   constructor(private http: HttpClient, private util: UtilService) { }
 
