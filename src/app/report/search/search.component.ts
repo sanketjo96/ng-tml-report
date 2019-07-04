@@ -12,8 +12,8 @@ import { reportConfig } from 'src/app/configs/search-input';
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
-  viewToggle = true;
-  view = 'Chart View';
+  viewToggle = false;
+  view: string;
   viewConfig: ITMLViewConfig;
   sControl: SearchPane;
   
@@ -23,9 +23,11 @@ export class SearchComponent implements OnInit {
 
   ngOnInit() {
     this.sControl = this.context.preferOldSearchPaneData();
+    const searchData = this.context.getSearchData();
+    this.viewToggle = searchData ? ((searchData.activeView === 'Chart View') ? false : true) : false;
+    this.setView();
     this.viewConfig = reportConfig;
     if (this.sControl.complaint.selectedVal) {
-      this.search(true);
       return;
     }
 
@@ -54,11 +56,15 @@ export class SearchComponent implements OnInit {
   
   onViewChange() {
     this.viewToggle = !this.viewToggle;
-    this.view = this.viewToggle ? 'Chart View' : 'Table View';
+    this.setView();
     this.search();
   }
 
-  search(redirection = false) {
+  setView() {
+    this.view = this.viewToggle ? 'Table View' : 'Chart View';
+  }
+
+  search() {
     this.sControl.complaint.selectedVal = this.sControl.complaint.instance.value;
     if (this.sControl.complaint.selectedVal) {
      const complaint = this.getPredictionObject(this.sControl.complaint.selectedVal, 'Complaint_Group');
@@ -67,8 +73,7 @@ export class SearchComponent implements OnInit {
           viewConfig: this.viewConfig,
           complaintGroupDesc: complaint.Complaint_Group_Description,
           searchParams: this.sControl,
-          activeView: this.view,
-          redirection
+          activeView: this.view
         }
         this.searchParams.emit(params)
       }

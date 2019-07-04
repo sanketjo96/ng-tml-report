@@ -4,12 +4,13 @@ import { ComplaintFinder, Complaint } from 'src/app/models/complaint';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { UtilService } from '../util/util.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
-  private base_url = "https://tml-report.herokuapp.com";
+  private base_url = environment.apibaseurl;
 
   constructor(private http: HttpClient, private util: UtilService) { }
 

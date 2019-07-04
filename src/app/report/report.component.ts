@@ -30,14 +30,18 @@ export class ReportComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    let eixtedSearchParams = this.context.getSearchData();
+    if (
+        eixtedSearchParams
+        && this.reportService.groupedData
+      ) {
+      this.setReport(eixtedSearchParams, this.reportService.groupedData);
+      return;
+    }
   }
 
   onSearch(params: ReportSearch) {
     this.searchParams = params.searchParams;
-    if (params.redirection) {
-      this.setReport(params, this.reportService.groupedData);
-      return;
-    }
 
     this.selectedModels = this.searchParams.models.selectedVal;
     this.dataService.findComplaints({
@@ -60,20 +64,21 @@ export class ReportComponent implements OnInit {
       : false
     ; 
     this.view = params.activeView;
+
+    const models = params.searchParams.models.selectedVal;
     this.detailsForSummary = {
       ccdes: params.complaintGroupDesc,
       ccode: params.searchParams.complaint.selectedVal,
-      model: (params.searchParams.models.selectedVal.length == 1) ? params.searchParams.models.selectedVal[0] : undefined
+      model: (models && models.length == 1) ? params.searchParams.models.selectedVal[0] : undefined
     } 
-    this.context.setSearchPaneData(params.searchParams);
+    this.context.setSearchData(params);
+    this.context.setComplaintDetails(this.reportService.rawData);
   }
 
   onRedirect(data) {
     const redirectParam = {
       ...data
     };
-
-    this.context.setComplaintDetails(this.reportService.rawData);
     this.router.navigate(['/details', redirectParam]);
   }
 }

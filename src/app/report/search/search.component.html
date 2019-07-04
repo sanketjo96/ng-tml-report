@@ -1,7 +1,7 @@
 <mat-card>
     <mat-card-content>
-        <mat-slide-toggle (toggleChange)="onViewChange()">
-          <mat-label>{{view}}</mat-label>
+        <mat-slide-toggle [checked]="viewToggle" (toggleChange)="onViewChange()">
+          <mat-label >{{view}}</mat-label>
         </mat-slide-toggle>
 
         <br>

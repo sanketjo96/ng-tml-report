@@ -48,6 +48,5 @@ export interface ReportSearch {
     complaintGroupDesc?: string,
     viewConfig: ITMLViewConfig,
     searchParams: SearchPane
-    activeView: string,
-    redirection: boolean;
+    activeView: string
 }

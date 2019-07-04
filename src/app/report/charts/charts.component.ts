@@ -22,8 +22,11 @@ export class ChartsComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges() {
-    this.data = this.reportService.getChartsDataSet(this.viewConfig);
-    this.detailsForSummary.charts = this.data;
+    if (this.viewConfig && this.detailsForSummary) {
+      this.data = this.reportService.getChartsDataSet(this.viewConfig);
+      this.detailsForSummary.charts = this.data;
+    }
+
   }
 
   openInfereance() {
