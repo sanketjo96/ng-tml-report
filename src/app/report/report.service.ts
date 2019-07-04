@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Complaint, ComplainList } from '../models/complaint';
-import { ITMLViewConfig, Contributors } from './report.data';
+import { ITMLViewConfig, Contributors, ReportSearch } from './report.data';
 import { UtilService } from '../core/util/util.service';
 import { Dset, TMLChartData, ChartType, IHighlight } from './charts/chart.data';
 
@@ -277,5 +277,13 @@ export class ReportService {
         }, 0);
 
         return cumPer;
+    }
+
+    isOnlyViewSettingChanged(oldParams: ReportSearch, newParams: ReportSearch): boolean {
+        let oldVal: ReportSearch = JSON.parse(JSON.stringify(oldParams));
+        let newVal: ReportSearch = JSON.parse(JSON.stringify(newParams));
+        oldVal.activeView ='';
+        newVal.activeView = '';
+        return JSON.stringify(oldVal) === JSON.stringify(newVal);
     }
 }

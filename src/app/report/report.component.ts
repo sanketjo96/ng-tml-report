@@ -4,7 +4,6 @@ import { DataService } from '../core/data/data.service';
 import { Complaint } from '../models/complaint';
 import { ReportService } from './report.service';
 import { ContextService } from '../core/context/context.service';
-import { SearchPane } from './search/search.data';
 import { Router } from '@angular/router';
 import { ISummary } from './charts/chart.data';
 
@@ -18,9 +17,9 @@ export class ReportComponent implements OnInit {
   reportLabel: string;
   viewsConfig: ITMLViewConfig = null;
   isDataPresent = false;
-  searchParams: SearchPane;
   selectedModels: Array<string> = [];
   detailsForSummary: ISummary;
+  loading = false;
 
   constructor(
     private dataService: DataService, 
@@ -30,34 +29,46 @@ export class ReportComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    let eixtedSearchParams = this.context.getSearchData();
-    if (
-        eixtedSearchParams
-        && this.reportService.groupedData
-      ) {
-      this.setReport(eixtedSearchParams, this.reportService.groupedData);
-      return;
-    }
+    // Check if report data already present, if present load the
+    // page using same data. Useful in cases where user wanted
+    // to navigate back from details page etc.
+    this.tryTosetReportWithExistingData();
   }
 
   onSearch(params: ReportSearch) {
-    this.searchParams = params.searchParams;
+    // If only view toggles, no need to trigger API
+    // Try to load the report from cached data
+    const cachedSearchParams =  this.context.getSearchData();
+    if (
+      cachedSearchParams
+      && params
+      && this.reportService.isOnlyViewSettingChanged(cachedSearchParams, params)     
+    ) {
+      this.tryTosetReportWithExistingData(params);
+      return;
+    }
 
-    this.selectedModels = this.searchParams.models.selectedVal;
-    this.dataService.findComplaints({
-      complaintGroupCode:  this.searchParams.complaint.selectedVal,
-      models:  this.searchParams.models.selectedVal,
-      from:  this.searchParams.from.selectedVal,
-      to:  this.searchParams.to.selectedVal,
-      mis:  this.searchParams.mis.selectedVal
-    }).subscribe((data: Array<Complaint>) => {
+    this.loading = true;
+    this.selectedModels = params.apiparams.models;
+    this.dataService.findComplaints(params.apiparams).subscribe((data: Array<Complaint>) => {
       this.reportService.getGroupedData(data, params.viewConfig);
       this.setReport(params, this.reportService.groupedData);
+      this.loading = false;
     });
   }
 
+  tryTosetReportWithExistingData(searchParams?: ReportSearch) {
+    let cachedSearchParams = searchParams ? searchParams : this.context.getSearchData();
+    if (
+        cachedSearchParams
+        && this.reportService.groupedData
+      ) {
+      this.setReport(cachedSearchParams, this.reportService.groupedData);
+    }
+  }
+
   setReport(params: ReportSearch, data) {
-    this.reportLabel = `${params.searchParams.complaint.selectedVal} - ${params.complaintGroupDesc}`;
+    this.reportLabel = `${params.apiparams.complaintGroupCode} - ${params.complaintGroupDesc}`;
     this.viewsConfig = JSON.parse(JSON.stringify(params.viewConfig));
     this.isDataPresent = (data && Object.keys(data).length)
       ? true
@@ -65,11 +76,11 @@ export class ReportComponent implements OnInit {
     ; 
     this.view = params.activeView;
 
-    const models = params.searchParams.models.selectedVal;
+    const models = params.apiparams.models;
     this.detailsForSummary = {
       ccdes: params.complaintGroupDesc,
-      ccode: params.searchParams.complaint.selectedVal,
-      model: (models && models.length == 1) ? params.searchParams.models.selectedVal[0] : undefined
+      ccode: params.apiparams.complaintGroupCode,
+      model: (models && models.length == 1) ? params.apiparams.models[0] : undefined
     } 
     this.context.setSearchData(params);
     this.context.setComplaintDetails(this.reportService.rawData);

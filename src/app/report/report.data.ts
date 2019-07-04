@@ -1,4 +1,5 @@
 import { SearchPane } from './search/search.data';
+import { ComplaintFinder } from '../models/complaint';
 
 export enum Contributors {
     topContributer="Top Contributor",
@@ -47,6 +48,6 @@ export interface ITMLViewConfig {
 export interface ReportSearch {
     complaintGroupDesc?: string,
     viewConfig: ITMLViewConfig,
-    searchParams: SearchPane
+    apiparams: ComplaintFinder,
     activeView: string
 }

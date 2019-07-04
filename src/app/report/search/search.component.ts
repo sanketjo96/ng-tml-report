@@ -72,9 +72,16 @@ export class SearchComponent implements OnInit {
       const params: ReportSearch = {
           viewConfig: this.viewConfig,
           complaintGroupDesc: complaint.Complaint_Group_Description,
-          searchParams: this.sControl,
+          apiparams: {
+            complaintGroupCode: this.sControl.complaint.selectedVal,
+            models: this.sControl.models.selectedVal,
+            mis: this.sControl.mis.selectedVal,
+            from: this.sControl.from.selectedVal,
+            to: this.sControl.to.selectedVal
+          },
           activeView: this.view
         }
+        this.context.setSearchPaneData(this.sControl);
         this.searchParams.emit(params)
       }
     }

@@ -7,14 +7,19 @@ import { ReportSearch } from 'src/app/report/report.data';
   providedIn: 'root'
 })
 export class ContextService {
-  private searchData: ReportSearch;
+  private searchControls: SearchPane;
+  private searchParams: ReportSearch = null;
   private detailsData: Array<Complaint>;
 
   constructor() { }
 
+  setSearchPaneData(data: SearchPane) {
+    this.searchControls = data;
+  }
+
   preferOldSearchPaneData(): SearchPane {
-    return this.searchData
-      ? this.searchData.searchParams
+    return this.searchControls
+      ? this.searchControls
       : new SearchPane(
           new SearchControl(),
           new SearchControl(),
@@ -26,11 +31,11 @@ export class ContextService {
   }
 
   setSearchData(data: ReportSearch) {
-    this.searchData = data;
+    this.searchParams = data;
   }
 
-  getSearchData() {
-    return this.searchData;
+  getSearchData(): ReportSearch {
+    return this.searchParams;
   }
 
   setComplaintDetails(detailsData: Array<Complaint>) {

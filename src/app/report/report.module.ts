@@ -16,6 +16,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ChartsComponent } from './charts/charts.component';
 import { InferenceModalComponent } from './inference/inference.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatInputModule,
     MatFormFieldModule,
     MatAutocompleteModule,
+    MatProgressSpinnerModule,
     SharedModule,
     ReportRoutingModule
   ],
