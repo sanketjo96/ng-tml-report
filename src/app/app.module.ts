@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
+import { JwtModule } from '@auth0/angular-jwt';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -11,6 +12,13 @@ import { ReportModule } from './report/report.module';
 import { PagenotfoundComponent } from './core/pagenotfound/pagenotfound.component';
 import { GroupDetailsModule } from './group-details/group-details.module';
 import { InferenceModalComponent } from './report/inference/inference.component';
+import { LoginModule } from './login/login.module';
+import { environment } from 'src/environments/environment';
+
+const base_url = environment.apibaseurl;
+function tokenGetter() {
+  return localStorage.getItem('access_token');
+}
 
 @NgModule({
   declarations: [
@@ -19,9 +27,17 @@ import { InferenceModalComponent } from './report/inference/inference.component'
   ],
   imports: [
     BrowserModule,
-    HttpClientModule,
     BrowserAnimationsModule,
+    HttpClientModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        whitelistedDomains: ['localhost:3002'],
+        blacklistedRoutes: ['localhost:3002/users/login']
+      }
+    }),
     MatToolbarModule,
+    LoginModule,
     ReportModule,
     GroupDetailsModule,
     AppRoutingModule

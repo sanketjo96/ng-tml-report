@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  apibaseurl: 'https://tml-report.herokuapp.com'
+  apibaseurl: 'http://localhost:3002',
+  whitelistedDomains: ['http://localhost:3002']
 };
 
 /*

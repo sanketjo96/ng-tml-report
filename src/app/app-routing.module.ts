@@ -3,6 +3,11 @@ import { Routes, RouterModule } from '@angular/router';
 import { PagenotfoundComponent } from './core/pagenotfound/pagenotfound.component';
 
 const routes: Routes = [
+  {
+    path: "",
+    redirectTo: 'login',
+    pathMatch: 'full'
+  },
   { 
     path: "**",
     component: PagenotfoundComponent

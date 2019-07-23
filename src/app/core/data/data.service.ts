@@ -14,8 +14,12 @@ export class DataService {
 
   constructor(private http: HttpClient, private util: UtilService) { }
 
+  login(credentials: {email: string, password: string}): Observable<any> {
+    return this.http.post(`${this.base_url}/users/login`, credentials);
+  }
+
   getModels(): Observable<Array<string>> {
-    return this.http.get(`${this.base_url}/getModels/`).pipe(
+    return this.http.get(`${this.base_url}/getModels`).pipe(
       map((data: any) => <Array<string>> data.data )
     );
   }
