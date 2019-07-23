@@ -15,8 +15,7 @@ import { InferenceModalComponent } from './report/inference/inference.component'
 import { LoginModule } from './login/login.module';
 import { environment } from 'src/environments/environment';
 
-const base_url = environment.apibaseurl;
-function tokenGetter() {
+export function tokenGetter() {
   return localStorage.getItem('access_token');
 }
 
@@ -32,8 +31,8 @@ function tokenGetter() {
     JwtModule.forRoot({
       config: {
         tokenGetter: tokenGetter,
-        whitelistedDomains: ['localhost:3002'],
-        blacklistedRoutes: ['localhost:3002/users/login']
+        whitelistedDomains: environment.whitelistedDomains,
+        blacklistedRoutes: environment.blacklistedRoutes
       }
     }),
     MatToolbarModule,

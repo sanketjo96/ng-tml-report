@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   apibaseurl: 'http://localhost:3002',
-  whitelistedDomains: ['http://localhost:3002']
+  whitelistedDomains: ['localhost:3002'],
+  blacklistedRoutes: ['localhost:3002/users/login']
 };
 
 /*
