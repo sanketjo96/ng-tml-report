@@ -31,7 +31,7 @@ export class SearchComponent implements OnInit {
       return;
     }
 
-    this.sControl.mis.data = [3, 6, 9, 12, 15, 18, 21, 24];   
+    this.sControl.mis.data = [3, 12, 24];   
     this.dataService.getModels().subscribe(data => this.sControl.models.data = data);
     this.sControl.complaint.instance.valueChanges.pipe(
       filter(text => text.length >= 4 && !this.getPredictionObject(text, 'Complaint_Group')),

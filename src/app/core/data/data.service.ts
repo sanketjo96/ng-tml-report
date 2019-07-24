@@ -29,8 +29,8 @@ export class DataService {
     let processedFinder: any = {
       models: finder.models ? finder.models.join(',') : undefined,
       mis: finder.mis ? finder.mis.toString() : undefined,
-      from: finder.from ? this.util.getTMLDateFormat(finder.from) : undefined,
-      to: finder.to ? this.util.getTMLDateFormat(finder.to) : undefined
+      from: finder.from ? new Date(finder.from).getFullYear() : undefined,
+      to: finder.to ? new Date(finder.to).getFullYear() : undefined
     };
 
     const params: HttpParams = this.util.getOptionalParamsForRequest(processedFinder);
