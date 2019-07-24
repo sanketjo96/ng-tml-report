@@ -1,10 +1,6 @@
-<div class="details-tables-wrapper" *ngIf="detailsGridData && detailsGridData.length">
-    <tml-table
-        [tableLable]="detailsLabel"
-        [defaultColToSort]="defaultColToSort"
-        class="dt-table" 
-        [pageSize]="50"
-        [displayedColumns]="cols"
-        [data]="detailsGridData">
-    </tml-table>
+<div class="details-cards-wrapper" *ngIf="detailsCardData && detailsCardData.length">
+    <div class="alert alert-success">{{ detailsLabel }}</div>
+    <div *ngFor="let cardData of detailsCardData">
+        <tml-complaint-card [data]="cardData"></tml-complaint-card>
+    </div>
 </div>

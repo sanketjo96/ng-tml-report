@@ -16,7 +16,8 @@ import {
   MatFormFieldModule,
   MatAutocompleteModule,
   MatProgressSpinnerModule,
-  MatToolbarModule
+  MatToolbarModule,
+  MatExpansionModule
 } from '@angular/material';
 
 
@@ -40,7 +41,8 @@ import {
     MatAutocompleteModule,
     MatProgressSpinnerModule,
     MatNativeDateModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatExpansionModule
   ],
   exports: [
     MatInputModule,
@@ -59,7 +61,8 @@ import {
     MatAutocompleteModule,
     MatProgressSpinnerModule,
     MatNativeDateModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatExpansionModule
   ]
 })
 export class MaterialModule { }

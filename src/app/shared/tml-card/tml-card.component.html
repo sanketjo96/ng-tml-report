@@ -1,0 +1,30 @@
+<div class="complaint-card-wrap">
+  <mat-card>
+    <div class="container-grid">
+      <div class="highlight">&nbsp;</div>
+      <h6 class="header">
+        {{ data.header }}
+      </h6>
+      <div class="complaint-grid">
+        <div class="item" *ngFor="let section of data.sections">
+          <div *ngFor="let item of section">
+            <label>{{ item.name }}</label>: {{ item.value }}
+          </div>
+        </div>
+        <mat-expansion-panel class="additional-content item">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <label>Additional Notes</label>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="notes-grid">
+            <ng-container *ngFor="let item of data.additionalSection">
+              <div class="notes-grid-item"><label>{{ item.name }}</label></div>
+              <div class="notes-grid-item">{{ item.value }}</div>
+            </ng-container>
+          </div>
+        </mat-expansion-panel>
+      </div>
+    </div>
+  </mat-card>
+</div>

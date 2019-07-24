@@ -1,7 +1,7 @@
 <mat-toolbar class="mat-elevation-z8" color="primary">
   <div color="accent"></div>
-  <span>TML Report</span>
-  <span style="margin-left: auto" (click)="logout()">Log out</span>
+  <span routerLink="/reports" class="pointer">TML Report</span>
+  <span class="log-out" (click)="logout()">Log out</span>
 </mat-toolbar>
 
 <router-outlet></router-outlet>

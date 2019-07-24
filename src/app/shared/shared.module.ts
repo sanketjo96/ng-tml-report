@@ -10,13 +10,15 @@ import { TmlBoxDatepickerComponent } from './tml-box-datepicker/tml-box-datepick
 import { TmlBarChartComponent } from './tml-chart/tml-bar-chart.component';
 import { MatNativeDateModule } from '@angular/material';
 import { MaterialModule } from '../material/material.module';
+import { TmlCompaintCardComponent } from './tml-card/tml-card.component';
 
 @NgModule({
   declarations: [
     TmlTableComponent, 
     TmlMultiSelectComponent, 
     TmlBoxDatepickerComponent, 
-    TmlBarChartComponent
+    TmlBarChartComponent, 
+    TmlCompaintCardComponent
   ],
   imports: [
     CommonModule,
@@ -28,6 +30,7 @@ import { MaterialModule } from '../material/material.module';
   providers: [MatNativeDateModule],
   exports: [
     TmlTableComponent,
+    TmlCompaintCardComponent,
     TmlMultiSelectComponent,
     TmlBoxDatepickerComponent,
     TmlBarChartComponent
