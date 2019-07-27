@@ -3,7 +3,11 @@ import { Dset } from 'src/app/report/charts/chart.data';
 export const chartOptions = {
     responsive: true,
     title: {
+      padding: 20,
       display: true,
+    },
+    legend: {
+     display: false
     },
     hover: {
       animationDuration: 0

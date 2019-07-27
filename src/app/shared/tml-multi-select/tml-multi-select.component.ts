@@ -11,6 +11,7 @@ export class TmlMultiSelectComponent implements OnInit {
   @Input() dataList: string;
   @Input() selectControl: FormControl;
   @Input() isMultiSelect = true;
+  @Input() default: any;
 
   constructor() { }
 

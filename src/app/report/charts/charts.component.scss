@@ -1,11 +1,9 @@
 .report-chart-wrapper {
     display: grid;
     grid-template-columns: 50% 50%;
-    grid-gap: 10px;
-    .tml-chart {
-        border-radius: 5px;
-        padding: 20px;
-        font-size: 150%;
-      }
+    grid-gap: 1rem;
+    @media only screen and (max-width: 800px) {
+      grid-template-columns:100%;
+    }
 }
   

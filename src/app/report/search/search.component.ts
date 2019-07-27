@@ -5,6 +5,7 @@ import { ITMLViewConfig, ReportSearch } from '../report.data';
 import { SearchPane } from './search.data';
 import { ContextService } from 'src/app/core/context/context.service';
 import { reportConfig } from 'src/app/configs/search-input';
+import { ComplaintFinder } from 'src/app/models/complaint';
 
 @Component({
   selector: 'app-search',
@@ -31,7 +32,7 @@ export class SearchComponent implements OnInit {
       return;
     }
 
-    this.sControl.mis.data = [3, 12, 24];   
+    this.sControl.mis.data = ['None', 3, 12, 24];   
     this.dataService.getModels().subscribe(data => this.sControl.models.data = data);
     this.sControl.complaint.instance.valueChanges.pipe(
       filter(text => text.length >= 4 && !this.getPredictionObject(text, 'Complaint_Group')),
@@ -69,16 +70,20 @@ export class SearchComponent implements OnInit {
     if (this.sControl.complaint.selectedVal) {
      const complaint = this.getPredictionObject(this.sControl.complaint.selectedVal, 'Complaint_Group');
      if (complaint) {
+      const apiparams: ComplaintFinder = {
+        complaintGroupCode: this.sControl.complaint.selectedVal,
+        models: this.sControl.models.selectedVal,
+        from: this.sControl.from.selectedVal,
+        to: this.sControl.to.selectedVal
+      }
+      
+      if ( this.sControl.mis.selectedVal !== 'None') {
+        apiparams.mis = this.sControl.mis.selectedVal;
+      }
       const params: ReportSearch = {
           viewConfig: this.viewConfig,
           complaintGroupDesc: complaint.Complaint_Group_Description,
-          apiparams: {
-            complaintGroupCode: this.sControl.complaint.selectedVal,
-            models: this.sControl.models.selectedVal,
-            mis: this.sControl.mis.selectedVal,
-            from: this.sControl.from.selectedVal,
-            to: this.sControl.to.selectedVal
-          },
+          apiparams,
           activeView: this.view
         }
         this.context.setSearchPaneData(this.sControl);
