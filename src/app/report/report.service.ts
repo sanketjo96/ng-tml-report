@@ -146,7 +146,6 @@ export class ReportService {
                 chart.datasets = [];
 
                 const dimension = view.dimension;
-                console.log(this.groupedData);
                 const currentDimData = this.groupedData[dimension];
 
                 let dataset = this.getChartDataSetObject(

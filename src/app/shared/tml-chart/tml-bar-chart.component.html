@@ -1,5 +1,6 @@
 <div *ngIf="chartData" [ngStyle]="style">
     <canvas
+        #chartCanvas
         baseChart
         [chartType]="chartData.chartType"
         [datasets]="chartData.datasets"

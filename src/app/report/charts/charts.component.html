@@ -8,8 +8,11 @@
 <div class="report-chart-wrapper" *ngIf="data && data.length">
     <div *ngFor="let chart of data">
         <h6 class="chart-head">{{chart.header}}</h6>
+        <div class="chart-action-pane">
+            <a href="" class="material-icons" (click)="ct.downloadCanvas($event)">save_alt</a>
+        </div>
         <div class="tml-chart">
-            <tml-bar-chart [chartData]="chart"></tml-bar-chart>
+            <tml-bar-chart #ct [chartData]="chart"></tml-bar-chart>
         </div>
     </div>
 </div>
