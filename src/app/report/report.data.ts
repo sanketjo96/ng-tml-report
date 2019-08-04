@@ -8,6 +8,17 @@ export enum Contributors {
     repeatContributor='Repeat Contributor',
 }
 
+export interface ICustomMesure {
+    name: string,
+    rule?: {
+        primaryMesure: string;
+        condition: {
+            mesure: string
+            value: string
+        }
+    }
+}
+
 export interface Summary {
     contributors: Array<Contributors>;
 } 
@@ -27,15 +38,16 @@ export interface ITable {
 }
 
 export interface IChart {
-    mesureToPlot?: Array<string>;
+    mesureToPlot: Array<ICustomMesure>;
     noParato?: boolean;
     summary?: Summary;
 }
 
+
 interface IView {
     label: string;
     dimension: string,
-    measures: Array<string>,
+    measures: Array<ICustomMesure>,
     table?: ITable;
     chart?: IChart;
 }

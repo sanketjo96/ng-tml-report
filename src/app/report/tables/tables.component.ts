@@ -22,6 +22,7 @@ export class TablesComponent implements OnInit, OnChanges {
 
   ngOnChanges() {
     this.data = this.reportService.getTablesDataSet();
+    console.log(this.data);
   }
 
   onRowClick(data, index) {

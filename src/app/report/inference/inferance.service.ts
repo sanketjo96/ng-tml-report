@@ -15,7 +15,7 @@ export class InferanceService {
           const row: any = {};
           for(let contributor of chart.highlights) {
             if (contributor.tabularize) {
-              row['Dimention'] = chart.title
+              row['Dimention'] = chart.header
               row['col-list'] = true;
               row[contributor.name] = contributor.matchedLabels;
             }

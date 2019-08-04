@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="chartData" [ngStyle]="style">
     <canvas
         baseChart
         [chartType]="chartData.chartType"

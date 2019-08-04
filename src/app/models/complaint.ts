@@ -9,6 +9,11 @@ export interface ComplaintFinder {
     mis?: number
 }
 
+export enum ClaimTypes {
+    regClaim='Regular Claims',
+    lebClaim='Labour Only Claims'
+}
+
 export class Complaint {
     _id: string;
     Dealer_Code: string;
@@ -35,7 +40,8 @@ export class Complaint {
     Total_Expenses: number;
     Customer_Complaint: string;
     Investigation: string;
-    Action_Taken: string
+    Action_Taken: string;
+    Claims_Indicator: ClaimTypes;
 
     constructor(data: any, util: UtilService) {
         this._id  = data._id;
@@ -59,7 +65,6 @@ export class Complaint {
                 && item.max >= this.Kilometers_Covered
             );
         });
-
         this.km_buckets = kmbucket ? kmbucket.label : 'Above 1,00,000 Km';
         
         this.Complaint_Group = data.Complaint_Group;
@@ -84,6 +89,7 @@ export class Complaint {
         this.Customer_Complaint = data.Customer_Complaint;
         this.Investigation = data.Investigation;
         this.Action_Taken  = data.Action_Taken;
+        this.Claims_Indicator = data.Claims_Indicator;
     }
 }
 

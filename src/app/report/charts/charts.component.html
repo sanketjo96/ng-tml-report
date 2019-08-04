@@ -6,7 +6,10 @@
 </button>
  
 <div class="report-chart-wrapper" *ngIf="data && data.length">
-    <div class="tml-chart" *ngFor="let chart of data">
-        <tml-bar-chart [chartData]="chart"></tml-bar-chart>
+    <div *ngFor="let chart of data">
+        <h6 class="chart-head">{{chart.header}}</h6>
+        <div class="tml-chart">
+            <tml-bar-chart [chartData]="chart"></tml-bar-chart>
+        </div>
     </div>
 </div>

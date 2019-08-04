@@ -32,6 +32,7 @@ export interface Dset {
 } 
 
 export interface TMLChartData {
+    header?: string;
     title?: string;
     chartType?: ChartType;
     datasets?: Array<Dset>;
@@ -39,4 +40,5 @@ export interface TMLChartData {
     options?: Array<any>;
     legend?: boolean;
     highlights?: Array<IHighlight>;
+    width?: string
 }

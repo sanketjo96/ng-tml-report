@@ -32,7 +32,7 @@ export class SearchComponent implements OnInit {
       return;
     }
 
-    this.sControl.mis.data = ['None', 3, 12, 24];   
+    this.sControl.mis.data = ['ALL', 3, 12, 24];   
     this.dataService.getModels().subscribe(data => this.sControl.models.data = data);
     this.sControl.complaint.instance.valueChanges.pipe(
       filter(text => text.length >= 4 && !this.getPredictionObject(text, 'Complaint_Group')),
@@ -77,7 +77,7 @@ export class SearchComponent implements OnInit {
         to: this.sControl.to.selectedVal
       }
       
-      if ( this.sControl.mis.selectedVal !== 'None') {
+      if ( this.sControl.mis.selectedVal !== 'ALL') {
         apiparams.mis = this.sControl.mis.selectedVal;
       }
       const params: ReportSearch = {

@@ -10,8 +10,13 @@ import { chartOptions } from './chart-options-conf';
 export class TmlBarChartComponent implements OnInit {
   @Input() chartData: TMLChartData;
   chartOptions: any
+  style: any = {
+    'position': 'relative',
+    'min-height': '300px',
+  };
 
   ngOnInit() {
+    this.style.width = this.chartData.width;
     this.chartOptions = chartOptions;
     this.chartOptions.title.text = this.chartData.title
   }

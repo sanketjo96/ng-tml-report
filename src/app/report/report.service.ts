@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Complaint, ComplainList } from '../models/complaint';
-import { ITMLViewConfig, Contributors, ReportSearch } from './report.data';
+import { ITMLViewConfig, Contributors, ReportSearch, ICustomMesure } from './report.data';
 import { UtilService } from '../core/util/util.service';
 import { Dset, TMLChartData, ChartType, IHighlight } from './charts/chart.data';
 
@@ -19,7 +19,6 @@ export class ReportService {
      */
     getGroupedData(data: Array<Complaint>, reportConfig: ITMLViewConfig) {
         this.rawData = new ComplainList(data, this.util).list;
-
         this.groupedData = this.rawData.reduce((acc, item: Complaint) => {
             for (let i = 0; i < reportConfig.views.length; i++) {
                 // Adding dimention as a master key to object
@@ -31,20 +30,44 @@ export class ReportService {
                 // Adding various dimention values as a sub key to object
                 // example: Complaint_Month > JSN, FEB, MAR
                 let dimensionVal = item[dimension];
-                acc[dimension][dimensionVal] =  acc[dimension][dimensionVal] || {};
+                acc[dimension][dimensionVal] = acc[dimension][dimensionVal] || {};
 
                 // Aggregating mesures values according to
                 // match
                 const measures = view.measures;
                 if (measures && measures.length) {
                     for (let j = 0; j < measures.length; j++) {
-                        acc[dimension][dimensionVal][measures[j]] = acc[dimension][dimensionVal][measures[j]] || 0;
-                        acc[dimension][dimensionVal][measures[j]] += parseInt(item[measures[j]], 10);
+                        let currentMesure = measures[j];
+                        let mesureName = currentMesure.name;
+                        let rule = currentMesure.rule;
+                        acc[dimension][dimensionVal][mesureName] = acc[dimension][dimensionVal][mesureName] || 0;
+                        acc[dimension][dimensionVal][mesureName] += (rule && Object.keys(rule).length)
+                            ? this.getCustomMesureValue(item, rule)
+                            : parseInt(item[mesureName], 10)
+                            ;
                     }
                 }
             }
             return acc;
         }, {});
+    }
+
+    /**
+     * 
+     * @param config 
+     */
+    getCustomMesureValue(data, rule) {
+        let mesureValue = 0;
+        let conditionalMesure = rule.condition.mesure;
+        let conditionalMesureVal = rule.condition.value;
+        if (
+            conditionalMesure
+            && conditionalMesureVal === data[conditionalMesure]
+        ) {
+            mesureValue = data[rule.primaryMesure];
+        }
+
+        return mesureValue;
     }
 
     /**
@@ -57,11 +80,11 @@ export class ReportService {
         const tablescol = [];
         const views = config.views;
         const viewsLength = views.length;
-        for (let k=0; k < viewsLength; k++) {
+        for (let k = 0; k < viewsLength; k++) {
             const col = [];
-            const view = views[k]; 
+            const view = views[k];
             col.push(view.dimension);
-            const updatedCol = col.concat(view.measures);
+            const updatedCol = col.concat(view.measures.map((item) => item.name));
             tablescol.push(updatedCol);
         }
         return tablescol;
@@ -75,11 +98,11 @@ export class ReportService {
         const tables = [];
         for (let dimention in this.groupedData) {
             const tableData = this.groupedData[dimention];
-            
+
             const table = []
             for (let dimensionVal in tableData) {
                 const mesures = tableData[dimensionVal];
-                
+
                 // Constructing table row by adding
                 // dim and mesures
                 const tableRow = {
@@ -100,40 +123,42 @@ export class ReportService {
         dataset.fill = fill;
         dataset.data = data ? data : [];
         dataset.label = label ? label : '';
-        dataset.yAxisID = yAxisID ? yAxisID: '';
+        dataset.yAxisID = yAxisID ? yAxisID : '';
         return dataset;
     }
 
 
     getChartsDataSet(config: ITMLViewConfig): Array<TMLChartData> {
         let charts: Array<TMLChartData> = [];
-        for (let k=0; k< config.views.length; k++) {
-            let chart: TMLChartData = {};
+        for (let k = 0; k < config.views.length; k++) {
             const view = config.views[k];
-            chart.chartType = ChartType.bar;
-            chart.title = view.label;
-            chart.legend = true;
-            chart.datasets = [];
-
-            const dimension = view.dimension;
-            const currentDimData = this.groupedData[dimension];
-            const mesuresToPlot = (view.chart && view.chart.mesureToPlot) 
-                ? view.chart.mesureToPlot 
+            const mesuresToPlot: Array<ICustomMesure> = (view.chart && view.chart.mesureToPlot)
+                ? view.chart.mesureToPlot
                 : [view.measures[0]]
             ;
 
             for (let mesure of mesuresToPlot) {
+                let chart: TMLChartData = {};
+                chart.chartType = ChartType.bar;
+                chart.title = '';
+                chart.header = `${mesure.name} - ${view.label}`;
+                chart.legend = true;
+                chart.datasets = [];
+
+                const dimension = view.dimension;
+                const currentDimData = this.groupedData[dimension];
+
                 let dataset = this.getChartDataSetObject(
                     ChartType.bar,
-                    mesure,
+                    mesure.name,
                     true,
                     'left'
                 );
 
-                const sorted = this.sortDecendingByMesure(currentDimData, mesure);
+                const sorted = this.sortDecendingByMesure(currentDimData, mesure.name);
                 let paratoData: Dset;
                 let closestParatoIndex;
-                if (!view.chart || !view.chart.noParato || sorted.data.length <= 1) {
+                if ((!view.chart || !view.chart.noParato) && sorted.data.length > 1) {
                     paratoData = this.getParatoDataSet(sorted.data);
                     const closestParatoData = this.util.getClosestNumber(paratoData.data, 80);
                     closestParatoIndex = paratoData.data.indexOf(closestParatoData);
@@ -149,12 +174,14 @@ export class ReportService {
                 dataset.showMesureOnTop = true;
                 chart.datasets.push(dataset);
                 chart.labels = sorted.labels;
-                
+                const estimateWidth = (chart.labels.length * 50);
+                chart.width = (estimateWidth <= 600) ? '600px' : (estimateWidth + 'px');
+
                 // If user selects a single model, app provides
                 // quick summary with highlights 
                 if (
-                    view.chart 
-                    && view.chart.summary 
+                    view.chart
+                    && view.chart.summary
                     && view.chart.summary.contributors
                     && view.chart.summary.contributors.length
                 ) {
@@ -165,20 +192,19 @@ export class ReportService {
                         closestParatoIndex ? closestParatoIndex : undefined
                     );
                 }
-
+                charts.push(chart);
             }
-            charts.push(chart);
         }
         return charts;
     }
 
-    getSummary(criterias: Array<Contributors>, labels: Array<string>, data: any, closestParatoIndex: number): Array<IHighlight>  {
+    getSummary(criterias: Array<Contributors>, labels: Array<string>, data: any, closestParatoIndex: number): Array<IHighlight> {
         const higlights: Array<IHighlight> = [];
         for (let criteria of criterias) {
             const indicator: IHighlight = {};
             indicator.name = criteria;
             indicator.tabularize = true;
- 
+
             switch (criteria) {
                 case Contributors.topContributer: {
                     const topData = data[0];
@@ -189,7 +215,7 @@ export class ReportService {
                 case Contributors.bottomContributor: {
                     const botData = data[data.length - 1];
                     indicator.data = botData;
-                    indicator.matchedLabels = this.findPossibleLabelsForMesure(data, labels, botData); 
+                    indicator.matchedLabels = this.findPossibleLabelsForMesure(data, labels, botData);
                     break;
                 }
                 case Contributors.eightyPerContributors: {
@@ -218,7 +244,7 @@ export class ReportService {
                 let label = labels[index];
                 const mesure = mesureVal ? mesureVal : value;
                 label += ` (${mesure} complaints)`;
-                return label; 
+                return label;
             }
         }).filter(data => data);
     }
@@ -234,7 +260,7 @@ export class ReportService {
             unsorted.push([dimensionVal, chartData[dimensionVal][mesure]]);
         }
 
-       const sorted = unsorted.sort(function(a, b) {
+        const sorted = unsorted.sort(function (a, b) {
             return b[1] - a[1];
         });
 
@@ -282,7 +308,7 @@ export class ReportService {
     isOnlyViewSettingChanged(oldParams: ReportSearch, newParams: ReportSearch): boolean {
         let oldVal: ReportSearch = JSON.parse(JSON.stringify(oldParams));
         let newVal: ReportSearch = JSON.parse(JSON.stringify(newParams));
-        oldVal.activeView ='';
+        oldVal.activeView = '';
         newVal.activeView = '';
         return JSON.stringify(oldVal) === JSON.stringify(newVal);
     }
