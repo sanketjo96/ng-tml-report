@@ -19,6 +19,11 @@ export const Mis: Array<DimBuckets> = [
         min: 13,
         max: 24,
         label: '24 MIS'
+    },
+    {
+        min: 24,
+        max: 36,
+        label: '36 MIS'
     }
 ]
 

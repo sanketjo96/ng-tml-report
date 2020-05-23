@@ -1,5 +1,6 @@
+import { Mis } from './../../configs/complaint';
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { filter, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { filter, debounceTime, distinctUntilChanged, switchMap, multicast } from 'rxjs/operators';
 import { DataService } from 'src/app/core/data/data.service';
 import { ITMLViewConfig, ReportSearch } from '../report.data';
 import { SearchPane } from './search.data';
@@ -32,7 +33,7 @@ export class SearchComponent implements OnInit {
       return;
     }
 
-    this.sControl.mis.data = ['ALL', 3, 12, 24];   
+    this.sControl.mis.data = ['ALL'].concat(<any>Mis.map(mis => mis.max));   
     this.dataService.getModels().subscribe(data => this.sControl.models.data = data);
     this.sControl.complaint.instance.valueChanges.pipe(
       filter(text => text.length >= 4 && !this.getPredictionObject(text, 'Complaint_Group')),
